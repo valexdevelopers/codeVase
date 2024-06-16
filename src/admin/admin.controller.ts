@@ -60,7 +60,7 @@ export class AdminController {
 
 
     
-    @Get('verify')
+    @Post('verify')
     async verify(@Body() verifyAdminDto: VerifyAdminDto, @Res() response: Response) {
         try {
         
@@ -84,7 +84,7 @@ export class AdminController {
     }
 
 
-    @Get('resend-verification')
+    @Post('resend-verification')
     async resendVerification(@Body() userId: string, @Res() response: Response) {
         try {
 

@@ -60,7 +60,7 @@ export class UserController {
 
 
 
-	@Get('verify')
+	@Post('verify')
 	async verify(@Body() verifyUserDto: VerifyUserDto, @Res() response: Response) {
 		try {
 
@@ -84,7 +84,7 @@ export class UserController {
 	}
 
 
-	@Get('resend-verification')
+	@Post('resend-verification')
 	async resendVerification(@Body() userId: string, @Res() response: Response) {
 		try {
 
