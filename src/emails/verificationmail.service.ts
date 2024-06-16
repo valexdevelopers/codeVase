@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { MailerService } from '@nestjs-modules/mailer';
-
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class VerificationMailService {
-    constructor(private readonly mailService: MailerService) { }
+	constructor(
+		private readonly mailService: MailerService,
+		private readonly configService: ConfigService
+	) { }
 
     async verificationMail(verificationUrl: string, email: string): Promise<any> {
         const sendMail = await this.mailService.sendMail({
-            from: "12012665909@mailinator.com",
+			from: this.configService.get('SMTP_USER'),
             to: "12012665909@mailinator.com",
             subject: "CodeVase Account Verification",
             text: "Kindly verify your account",
@@ -92,7 +95,7 @@ export class VerificationMailService {
 													<br /><br />
 													Thank you for your prompt attention to this matter.
 												</p>
-												<span style="
+												<a style="
 													display: block;
 													background-color: #fbbf24;
 													color: #000000;
@@ -106,9 +109,11 @@ export class VerificationMailService {
 													font-size: 13px;
 													font-family: 'DM Sans', sans-serif;
 													text-decoration: none;
-													">
-													${verificationUrl}
-												</span>
+													"
+													
+													href="${verificationUrl}">
+													click Here to verify
+												</a>
 											</div>
 						
 											<footer style="background-color: #e5e7eb; padding: 16px; text-align: center">

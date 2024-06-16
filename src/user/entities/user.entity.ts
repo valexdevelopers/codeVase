@@ -1,8 +1,7 @@
-import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, IsOptional } from 'class-validator';
 
 export class User {
-    // @Field(() => Int, { description: 'Example field (placeholder)' })
-    // exampleField: number;
+
 
     @IsNotEmpty()
     @IsString()
@@ -10,11 +9,20 @@ export class User {
 
     @IsNotEmpty()
     @IsString()
-    name: string
+    fullname: string
 
     @IsNotEmpty()
     @IsEmail()
     email: string
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    profile_image?: string
+
+    @IsString()
+    @IsNotEmpty()
+    refreshToken: string
 
 
 }

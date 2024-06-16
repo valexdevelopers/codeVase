@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 export class VerifyTokenService {
@@ -19,7 +19,7 @@ export class VerifyTokenService {
             return payload.email
         }  
     
-        throw new BadRequestException("This token is either invalid or expired", {
+        throw new ForbiddenException("This token is either invalid or expired", {
             cause: new Error(),
             description: "invalid token"
         });

@@ -78,6 +78,14 @@ export class AdminService {
         const verificationUrl = `${this.configService.get('FRONTEND_URL')}/admin/verify/${generateVerificationToken}`
         const sendVerificationEmail = await this.verificationMailService.verificationMail(verificationUrl, registerAdmin.email);
     
+        if (!sendVerificationEmail) {
+            
+            throw new InternalServerErrorException("Internal server error! Could not send email", {
+                cause: new Error(),
+                description: "server error"
+            })
+        
+        }
         return { accessToken, refreshToken, newAdminData };
     }
 
@@ -159,7 +167,10 @@ export class AdminService {
         const sendVerificationEmail = await this.verificationMailService.verificationMail(verificationUrl, admin.email);
 
         if (!sendVerificationEmail) {
-            return false
+            throw new InternalServerErrorException("Internal server error! Could not send verification mail", {
+                cause: new Error(),
+                description: "server error"
+            })
         }
         return true;
 
@@ -241,5 +252,8 @@ export class AdminService {
 
         return updateAdmin;
 
-   }
+    }
+    
+
+    
 }

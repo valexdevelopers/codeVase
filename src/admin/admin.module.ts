@@ -7,6 +7,7 @@ import { GenereteTokenService } from 'src/helpers/generatetoken.service';
 import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { VerificationMailService } from 'src/emails/verificationmail.service';
+import { VerifyTokenService } from 'src/helpers/verifyToken.service';
 
 @Module({
   imports: [
@@ -20,16 +21,23 @@ import { VerificationMailService } from 'src/emails/verificationmail.service';
         transport: {
           host: process.env.SMTP_HOST,
           port: process.env.SMTP_PORT,
-          secure: process.env.SMTP_SECURITY,
+          // secure: process.env.SMTP_SECURITY,
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
           },
-          connectionTimeout: 10000 //10 seconds
+          // connectionTimeout: 10000 //10 seconds
         }
       }),
   ],
   controllers: [AdminController],
-  providers: [AdminService, DatabaseService, JwtService, GenereteTokenService, VerificationMailService],
+  providers: [
+    AdminService,
+    DatabaseService,
+    JwtService,
+    GenereteTokenService,
+    VerificationMailService,
+    VerifyTokenService
+  ],
 })
 export class AdminModule {}
