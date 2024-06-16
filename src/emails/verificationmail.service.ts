@@ -11,8 +11,8 @@ export class VerificationMailService {
         const sendMail = await this.mailService.sendMail({
             from: "12012665909@mailinator.com",
             to: "12012665909@mailinator.com",
-            subject: "GV3N Account Verification",
-            text: "email working test",
+            subject: "CodeVase Account Verification",
+            text: "Kindly verify your account",
             html: `<!DOCTYPE html>
 						<html lang="en">
 						

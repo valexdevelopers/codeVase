@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsNotEmpty, Length, IsDate } from 'class-validator';
+import { IsEmail, IsStrongPassword, IsOptional, IsNotEmpty, Length, IsDate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAdminDto {
@@ -15,19 +15,27 @@ export class CreateAdminDto {
 
 
     @ApiProperty()
-    @Length(10, 20)
+    @Length(10, 16)
     @IsNotEmpty()
+    @IsStrongPassword({
+        minLength: 8,
+        minLowercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+        minUppercase: 1
+    })
     password: string
 
+    @IsOptional()
     @IsDate()
-    email_verified_at: Date
+    email_verified_at?: Date
 
-    @ApiProperty()
+    @IsOptional()
     @IsDate()
-    created_at: Date
+    created_at?: Date
 
-    @ApiProperty()
+    @IsOptional()
     @IsDate()
-    deleted_at: Date
+    deleted_at?: Date
 
 }

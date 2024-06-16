@@ -29,6 +29,19 @@ export class GenereteTokenService{
                 secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET')
             })
 
-        return { accessToken, refreshToken }
+        return { accessToken, refreshToken };
+    }
+
+
+    public verificationToken(adminId: string, email: string): string {
+        // generates verification tokens for accounts
+        const verificationToken = this.jwtService.sign({
+            adminId: adminId,
+            email: email
+        }, {
+            expiresIn: '2h',
+            secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET')
+        });
+        return verificationToken;
     }
 }
