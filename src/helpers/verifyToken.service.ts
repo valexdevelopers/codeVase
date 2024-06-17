@@ -9,14 +9,15 @@ export class VerifyTokenService {
         private readonly configService: ConfigService
     ) { }
 
-    public async verifyToken(token: string): Promise<string> {
+    public async verifyToken(token: string, verificationType: string): Promise<{email?: string, sub?: string}> {
        
         const payload = await this.jwtService.verify(token, {
-            secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET')
+            secret: this.configService.get(verificationType)
         })
 
         if (typeof payload === 'object' && 'email' in payload) {
-            return payload.email
+            return payload
+            // return just the payload so the function is reuseables
         }  
     
         throw new ForbiddenException("This token is either invalid or expired", {

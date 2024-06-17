@@ -22,6 +22,7 @@ export class AdminController {
                     status: 'ok!',
                     message: 'Your admin account has been created',
                     accessToken: admin.accessToken,
+                    refreshToken: admin.refreshToken,
                     data: admin.newAdminData,
                 });
 
@@ -45,6 +46,7 @@ export class AdminController {
                 status: 'ok!',
                 message: 'login successful',
                 accessToken: loginAdmin.accessToken,
+                refreshToken: loginAdmin.refreshToken,
                 data: loginAdmin.newAdminData,
             });
 

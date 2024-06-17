@@ -9,6 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { DatabaseService } from './database/database.service';
+import { TaskModule } from './task/task.module';
 
 @Module({
     imports: [
@@ -43,7 +44,8 @@ import { DatabaseService } from './database/database.service';
                 ttl: 12000,
                 limit: 5
             },
-        ])
+        ]),
+        TaskModule
     ],
   controllers: [AppController],
     providers: [

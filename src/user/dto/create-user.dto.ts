@@ -1,5 +1,6 @@
 import { IsEmail, IsStrongPassword, IsOptional, IsNotEmpty, Length, IsDate, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { confirmFieldDecorator } from "src/decorators/confirm_field.decorator";
 
 export class CreateUserDto {
 
@@ -26,6 +27,10 @@ export class CreateUserDto {
     })
     password: string
 
+
+    @confirmFieldDecorator('password')
+    password_confirmation: string
+    
     @IsOptional()
     @IsString()
     profile_image: string

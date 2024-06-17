@@ -16,13 +16,7 @@ export class Admin {
     @IsNotEmpty()
     fullname: string
 
-    // @IsOptional()
-    // @IsDate()
-    // email_verified_at?: Date
-
-    @IsString()
-    @IsNotEmpty()
-    refreshToken: string
+    
 
 }
 

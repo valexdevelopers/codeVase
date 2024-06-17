@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
@@ -132,6 +132,61 @@ export class AdminService {
         return { accessToken, refreshToken, newAdminData };
     }
 
+    public async refreshAccessToken(IncomingRefreshToken: string): Promise<{ accessToken: string, refreshToken: string, updatedAdminData: Admin }> {
+        // todo first validate the refresh token by comparing the hash value
+
+        
+        
+        const payload = await this.verifyTokenService.verifyToken(IncomingRefreshToken, 'JWT_REFRESH_TOKEN_SECRET');
+
+        const IsExistingAdmin = await this.databaseService.admin.findUnique({
+            where: {
+                id: payload.sub,
+                refreshToken: { not: null }
+            },
+            select: {
+                id: true,
+                email: true,
+                fullname: true,
+                refreshToken: true
+            }
+        });
+
+        if (!IsExistingAdmin) {
+            throw new NotFoundException("Admin account logged out, kindly login again", {
+                cause: new Error(),
+                description: "admin with valid refresh token not found"
+            });
+        }
+
+        // check if the incoming refreshToken is valid for this user by comparing its hash value 
+        const IsValidRefreshToken = await Bcrypt.compare(IncomingRefreshToken, IsExistingAdmin.refreshToken)
+
+        if (!IsValidRefreshToken) {
+            throw new ForbiddenException("Your session is no longer valid, kindly login", {
+                cause: new Error(),
+                description: "Invalid refresh token your"
+            });
+        }
+
+        // generate new admin Tokens if all validation checks passed
+        const { accessToken, refreshToken } = await this.generateToken.createTokens(IsExistingAdmin.id, IsExistingAdmin.email);
+
+        // store newly created refreshtoken 
+        const updatedAdminData: Admin = await this.updateRefreshToken(IsExistingAdmin.id, refreshToken)
+
+        if (!updatedAdminData) {
+            throw new InternalServerErrorException("Internal server error, Your session stopped abruptly. Kindly login", {
+                cause: new Error(),
+                description: "could not set new refresh token"
+            });
+        }
+        // return user and new access tokens
+        return { accessToken, refreshToken, updatedAdminData };
+        
+    }
+
+
     public async resendVerificationEmail(userId: string): Promise< boolean> {
         // find Admin 
         const admin = await this.databaseService.admin.findUnique({
@@ -182,10 +237,10 @@ export class AdminService {
 
         // check if token is valid
         // this function returns a string
-        const IsTokenValid = await this.verifyTokenService.verifyToken(token);
+        const IsTokenValid = await this.verifyTokenService.verifyToken(token, 'JWT_VERIFICATION_TOKEN_SECRET');
 
         // set email_verification time if token is valid
-        const updateAdmin = await this.updateEmailVerification(IsTokenValid);
+        const updateAdmin = await this.updateEmailVerification(IsTokenValid.email);
 
         // generate new token adminTokens
         const { accessToken, refreshToken } = await this.generateToken.createTokens(updateAdmin.id, updateAdmin.email);
@@ -197,6 +252,24 @@ export class AdminService {
         return { accessToken, refreshToken, newAdminData };
 
    }
+
+    public async logout(adminId: string): Promise<any>{
+        // null refresh token
+        const findAdmin = await this.databaseService.admin.update({
+            where: {
+                id: adminId,
+                refreshToken: { not: null }
+            },
+            data: {
+                refreshToken: null
+            }
+        });
+
+        return {loggedOut: true}
+
+
+    }
+
 
     // this function updates the admin refresh token
     private async updateRefreshToken(adminId: string, adminrefreshToken: string): Promise<Admin> {
@@ -217,7 +290,6 @@ export class AdminService {
                 id: true,
                 fullname: true,
                 email: true,
-                refreshToken: true
             }
         });
 
@@ -238,7 +310,6 @@ export class AdminService {
                 id: true,
                 fullname: true,
                 email: true,
-                refreshToken: true
             }
         })
         

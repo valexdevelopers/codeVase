@@ -45,8 +45,11 @@ model Challenge{
   id String @id @default(uuid())
   admin Admin @relation(fields: [admin_id], references: [id])
   admin_id String
-  challenge String
-  challenge_answer String
+  title String
+  description String? @db.LongText
+  challenge String @db.LongText
+  challenge_answer String @db.LongText
+  languages Language
   attempt TaskAttempts[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -60,7 +63,7 @@ model TaskAttempts{
   user_id String
   challenge Challenge @relation(fields: [challenge_id], references: [id])
   challenge_id String
-  user_answer String
+  user_answer String @db.LongText
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   deleted_at DateTime? 
@@ -70,4 +73,9 @@ model TaskAttempts{
 enum Status{
   Sucess
   Unsuccessful
+}
+
+enum Language{
+  javascript
+  Java
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -132,6 +132,60 @@ export class UserService {
 		return { accessToken, refreshToken, newUserData };
 	}
 
+	public async refreshAccessToken(IncomingRefreshToken: string): Promise<{ accessToken: string, refreshToken: string, updatedUserData: User }> {
+		// todo first validate the refresh token by comparing the hash value
+
+
+
+		const payload = await this.verifyTokenService.verifyToken(IncomingRefreshToken, 'JWT_REFRESH_TOKEN_SECRET');
+
+		const IsExistingUser = await this.databaseService.user.findUnique({
+			where: {
+				id: payload.sub,
+				refreshToken: { not: null }
+			},
+			select: {
+				id: true,
+				email: true,
+				fullname: true,
+				refreshToken: true
+			}
+		});
+
+		if (!IsExistingUser) {
+			throw new NotFoundException("Admin account logged out, kindly login again", {
+				cause: new Error(),
+				description: "admin with valid refresh token not found"
+			});
+		}
+
+		// check if the incoming refreshToken is valid for this user by comparing its hash value 
+		const IsValidRefreshToken = await Bcrypt.compare(IncomingRefreshToken, IsExistingUser.refreshToken)
+
+		if (!IsValidRefreshToken) {
+			throw new ForbiddenException("Your session is no longer valid, kindly login", {
+				cause: new Error(),
+				description: "Invalid refresh token your"
+			});
+		}
+
+		// generate new admin Tokens if all validation checks passed
+		const { accessToken, refreshToken } = await this.generateToken.createTokens(IsExistingUser.id, IsExistingUser.email);
+
+		// store newly created refreshtoken 
+		const updatedUserData: User = await this.updateRefreshToken(IsExistingUser.id, refreshToken)
+
+		if (!updatedUserData) {
+			throw new InternalServerErrorException("Internal server error, Your session stopped abruptly. Kindly login", {
+				cause: new Error(),
+				description: "could not set new refresh token"
+			});
+		}
+		// return user and new access tokens
+		return { accessToken, refreshToken, updatedUserData };
+
+	}
+
 	public async resendVerificationEmail(userId: string): Promise<boolean> {
 		// find user
 		const user = await this.databaseService.user.findUnique({
@@ -179,10 +233,10 @@ export class UserService {
 
 		// check if token is valid
 		// this function returns a string
-		const IsTokenValid = await this.verifyTokenService.verifyToken(token);
+		const IsTokenValid = await this.verifyTokenService.verifyToken(token, 'JWT_VERIFICATION_TOKEN_SECRET');
 
 		// set email_verification time if token is valid
-		const updateUser = await this.updateEmailVerification(IsTokenValid);
+		const updateUser = await this.updateEmailVerification(IsTokenValid.email);
 
 		// generate new token UserTokens
 		const { accessToken, refreshToken } = await this.generateToken.createTokens(updateUser.id, updateUser.email);
@@ -194,6 +248,24 @@ export class UserService {
 		return { accessToken, refreshToken, newUserData };
 
 	}
+
+	public async logout(userId: string): Promise<any> {
+		// null refresh token
+		const findUser = await this.databaseService.user.update({
+			where: {
+				id: userId,
+				refreshToken: { not: null }
+			},
+			data: {
+				refreshToken: null
+			}
+		});
+
+		return { loggedOut: true }
+
+
+	}
+
 
   // this function updates the user refresh token
 	private async updateRefreshToken(user: string, userrefreshToken: string): Promise<User> {
@@ -213,8 +285,8 @@ export class UserService {
       select: {
         id: true,
         fullname: true,
-        email: true,
-        refreshToken: true
+        email: true
+
       }
     });
 

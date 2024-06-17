@@ -20,9 +20,6 @@ export class User {
     @IsOptional()
     profile_image?: string
 
-    @IsString()
-    @IsNotEmpty()
-    refreshToken: string
 
 
 }
