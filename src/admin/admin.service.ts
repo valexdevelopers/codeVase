@@ -23,12 +23,12 @@ export class AdminService {
         private readonly configService: ConfigService,
         private readonly verifyTokenService: VerifyTokenService
     ) { }
-    
+
     public async createAdmin(createAdminDto: CreateAdminDto): Promise<{ accessToken: string, refreshToken: string, newAdminData: Admin }> {
         // this function creates a new admin
 
         // generate unique salt
-        const salt = await Bcrypt.genSalt();
+        const salt = await Bcrypt.genSalt(10);
 
         const newAdmin: Prisma.AdminCreateInput = {
             fullname: createAdminDto.fullname,
@@ -61,7 +61,7 @@ export class AdminService {
         }
 
         // generate adminTokens
-        const {accessToken, refreshToken} = await this.generateToken.createTokens(registerAdmin.id, registerAdmin.email);
+        const { accessToken, refreshToken } = await this.generateToken.createTokens(registerAdmin.id, registerAdmin.email);
 
         const newAdminData: Admin = await this.updateRefreshToken(registerAdmin.id, refreshToken)
 
@@ -77,19 +77,19 @@ export class AdminService {
 
         const verificationUrl = `${this.configService.get('FRONTEND_URL')}/admin/verify/${generateVerificationToken}`
         const sendVerificationEmail = await this.verificationMailService.verificationMail(verificationUrl, registerAdmin.email);
-    
+
         if (!sendVerificationEmail) {
-            
+
             throw new InternalServerErrorException("Internal server error! Could not send email", {
                 cause: new Error(),
                 description: "server error"
             })
-        
+
         }
         return { accessToken, refreshToken, newAdminData };
     }
 
-    public async loginAdmin(loginAdminDto: LoginAdminDto): Promise<{ accessToken: string, refreshToken: string, newAdminData: Admin }>{
+    public async loginAdmin(loginAdminDto: LoginAdminDto): Promise<{ accessToken: string, refreshToken: string, newAdminData: Admin }> {
         const { email, password } = loginAdminDto;
 
         // find Uuniqe user 
@@ -135,8 +135,8 @@ export class AdminService {
     public async refreshAccessToken(IncomingRefreshToken: string): Promise<{ accessToken: string, refreshToken: string, updatedAdminData: Admin }> {
         // todo first validate the refresh token by comparing the hash value
 
-        
-        
+
+
         const payload = await this.verifyTokenService.verifyToken(IncomingRefreshToken, 'JWT_REFRESH_TOKEN_SECRET');
 
         const IsExistingAdmin = await this.databaseService.admin.findUnique({
@@ -183,11 +183,11 @@ export class AdminService {
         }
         // return user and new access tokens
         return { accessToken, refreshToken, updatedAdminData };
-        
+
     }
 
 
-    public async resendVerificationEmail(userId: string): Promise< boolean> {
+    public async resendVerificationEmail(userId: string): Promise<boolean> {
         // find Admin 
         const admin = await this.databaseService.admin.findUnique({
             where: {
@@ -232,8 +232,8 @@ export class AdminService {
     }
 
     // checks the validity of the verification token
-    public async verifyAdmin(verifyAdminDto: VerifyAdminDto): Promise<{ accessToken: string, refreshToken: string, newAdminData: Admin }>  {
-        const {token} = verifyAdminDto;
+    public async verifyAdmin(verifyAdminDto: VerifyAdminDto): Promise<{ accessToken: string, refreshToken: string, newAdminData: Admin }> {
+        const { token } = verifyAdminDto;
 
         // check if token is valid
         // this function returns a string
@@ -251,9 +251,9 @@ export class AdminService {
 
         return { accessToken, refreshToken, newAdminData };
 
-   }
+    }
 
-    public async logout(adminId: string): Promise<any>{
+    public async logout(adminId: string): Promise<any> {
         // null refresh token
         const findAdmin = await this.databaseService.admin.update({
             where: {
@@ -265,7 +265,7 @@ export class AdminService {
             }
         });
 
-        return {loggedOut: true}
+        return { loggedOut: true }
 
 
     }
@@ -273,9 +273,9 @@ export class AdminService {
 
     // this function updates the admin refresh token
     private async updateRefreshToken(adminId: string, adminrefreshToken: string): Promise<Admin> {
-        
+
         // generate unique salt
-        const salt = await Bcrypt.genSalt();
+        const salt = await Bcrypt.genSalt(10);
         const hashRefreshToken = await Bcrypt.hash(adminrefreshToken, salt);
 
         // update admin with refreshToken
@@ -284,7 +284,7 @@ export class AdminService {
                 id: adminId
             },
             data: {
-                refreshToken: adminrefreshToken
+                refreshToken: hashRefreshToken
             },
             select: {
                 id: true,
@@ -298,7 +298,7 @@ export class AdminService {
 
     // updates admin after email verification
     private async updateEmailVerification(email: string): Promise<Admin> {
-        
+
         const updateAdmin = await this.databaseService.admin.update({
             where: {
                 email: email
@@ -312,19 +312,19 @@ export class AdminService {
                 email: true,
             }
         })
-        
+
         if (!updateAdmin) {
             throw new UnauthorizedException("User does not exist", {
                 cause: new Error(),
                 description: "user not found"
             });
-            
+
         }
 
         return updateAdmin;
 
     }
-    
 
-    
+
+
 }

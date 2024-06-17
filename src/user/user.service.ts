@@ -28,36 +28,36 @@ export class UserService {
 		// this function creates a new User
 
 		// generate unique salt
-		const salt = await Bcrypt.genSalt();
+		const salt = await Bcrypt.genSalt(10);
 
 		const newUser: Prisma.UserCreateInput = {
-		fullname: createUserDto.fullname,
-		email: createUserDto.email,
-		password: await Bcrypt.hash(createUserDto.password, salt),
+			fullname: createUserDto.fullname,
+			email: createUserDto.email,
+			password: await Bcrypt.hash(createUserDto.password, salt),
 		}
 
 		// check if User exists with this email
 		const IsRegisteredUser = await this.databaseService.admin.findFirst({
-		where: {
-			email: newUser.email
-		}
+			where: {
+				email: newUser.email
+			}
 		});
 
 		if (IsRegisteredUser) {
-		// if email exists in database, throw an conflict exception 
-		throw new ConflictException("User account already exists, Please login", {
-			cause: new Error(),
-			description: "Email not unique, an User with the email exists"
-		});
+			// if email exists in database, throw an conflict exception 
+			throw new ConflictException("User account already exists, Please login", {
+				cause: new Error(),
+				description: "Email not unique, an User with the email exists"
+			});
 		}
 
 		const registerUser = await this.databaseService.user.create({ data: newUser });
 
 		if (!registerUser) {
-		throw new InternalServerErrorException("Internal server error! Admin registration failed", {
-			cause: new Error(),
-			description: "server error"
-		})
+			throw new InternalServerErrorException("Internal server error! Admin registration failed", {
+				cause: new Error(),
+				description: "server error"
+			})
 		}
 
 		// generate adminTokens
@@ -69,10 +69,10 @@ export class UserService {
 		const generateVerificationToken = await this.generateToken.verificationToken(registerUser.id, registerUser.email)
 
 		if (!generateVerificationToken) {
-		throw new InternalServerErrorException("Internal server error! Could not generate email token", {
-			cause: new Error(),
-			description: "server error"
-		})
+			throw new InternalServerErrorException("Internal server error! Could not generate email token", {
+				cause: new Error(),
+				description: "server error"
+			})
 		}
 
 		const verificationUrl = `${this.configService.get('FRONTEND_URL')}/verify/${generateVerificationToken}`
@@ -80,10 +80,10 @@ export class UserService {
 
 		if (!sendVerificationEmail) {
 
-		throw new InternalServerErrorException("Internal server error! Could not send email", {
-			cause: new Error(),
-			description: "server error"
-		})
+			throw new InternalServerErrorException("Internal server error! Could not send email", {
+				cause: new Error(),
+				description: "server error"
+			})
 
 		}
 		return { accessToken, refreshToken, newUserData };
@@ -94,26 +94,26 @@ export class UserService {
 
 		// find Uuniqe user 
 		const IsRegisteredUser = await this.databaseService.user.findUnique({
-		where: {
-			email: email
-		}
+			where: {
+				email: email
+			}
 		});
 
 		//  email address does not exsit if database
 		if (!IsRegisteredUser) {
-		throw new UnauthorizedException("Invalid email or password", {
-			cause: new Error(),
-			description: "authentication error, email not registered"
-		});
+			throw new UnauthorizedException("Invalid email or password", {
+				cause: new Error(),
+				description: "authentication error, email not registered"
+			});
 		}
 
 		// compare provided password with registered password
 		const IsPasswordMatch = await Bcrypt.compare(password, IsRegisteredUser.password)
 		if (!IsPasswordMatch) {
-		throw new UnauthorizedException("Invalid email or password", {
-			cause: new Error(),
-			description: "authentication error, password do not match"
-		});
+			throw new UnauthorizedException("Invalid email or password", {
+				cause: new Error(),
+				description: "authentication error, password do not match"
+			});
 		}
 
 		// generate UserTokens
@@ -189,39 +189,39 @@ export class UserService {
 	public async resendVerificationEmail(userId: string): Promise<boolean> {
 		// find user
 		const user = await this.databaseService.user.findUnique({
-		where: {
-			id: userId
-		},
-		select: {
-			id: true,
-			fullname: true,
-			email: true,
-			refreshToken: true
-		}
+			where: {
+				id: userId
+			},
+			select: {
+				id: true,
+				fullname: true,
+				email: true,
+				refreshToken: true
+			}
 		});
 
 		if (!user) {
-		throw new NotFoundException("This user does not exist", {
-			cause: new Error(),
-			description: "user not found in database"
-		});
+			throw new NotFoundException("This user does not exist", {
+				cause: new Error(),
+				description: "user not found in database"
+			});
 		}
 
 		// generate verification token
 		const generateVerificationToken = await this.generateToken.verificationToken(user.id, user.email)
 
 		if (!generateVerificationToken) {
-		throw new InternalServerErrorException("Internal server error! Could not generate email token", {
-			cause: new Error(),
-			description: "server error"
-		})
+			throw new InternalServerErrorException("Internal server error! Could not generate email token", {
+				cause: new Error(),
+				description: "server error"
+			})
 		}
 
 		const verificationUrl = `${this.configService.get('FRONTEND_URL')}/verify/${generateVerificationToken}`
 		const sendVerificationEmail = await this.verificationMailService.verificationMail(verificationUrl, user.email);
 
 		if (!sendVerificationEmail) {
-		return false
+			return false
 		}
 		return true;
 
@@ -267,61 +267,61 @@ export class UserService {
 	}
 
 
-  // this function updates the user refresh token
+	// this function updates the user refresh token
 	private async updateRefreshToken(user: string, userrefreshToken: string): Promise<User> {
 
-    // generate unique salt
-    const salt = await Bcrypt.genSalt();
-    const hashRefreshToken = await Bcrypt.hash(userrefreshToken, salt);
+		// generate unique salt
+		const salt = await Bcrypt.genSalt(10);
+		const hashRefreshToken = await Bcrypt.hash(userrefreshToken, salt);
 
-    // update user with refreshToken
-    const addUserRefreshToken = this.databaseService.user.update({
-      where: {
-			id: user
-      },
-      data: {
-        refreshToken: userrefreshToken
-      },
-      select: {
-        id: true,
-        fullname: true,
-        email: true
+		// update user with refreshToken
+		const addUserRefreshToken = this.databaseService.user.update({
+			where: {
+				id: user
+			},
+			data: {
+				refreshToken: hashRefreshToken
+			},
+			select: {
+				id: true,
+				fullname: true,
+				email: true
 
-      }
-    });
+			}
+		});
+		console.log(hashRefreshToken)
+		return addUserRefreshToken;
+	}
 
-    return addUserRefreshToken;
-  }
-
-  // updates user after email verification
+	// updates user after email verification
 	private async updateEmailVerification(email: string): Promise<User> {
 
 		const updateUser = await this.databaseService.user.update({
-      where: {
-        email: email
-      },
-      data: {
-        email_verified_at: new Date()
-      },
-      select: {
-        id: true,
-        fullname: true,
-        email: true,
-        refreshToken: true
-      }
-    })
+			where: {
+				email: email
+			},
+			data: {
+				email_verified_at: new Date()
+			},
+			select: {
+				id: true,
+				fullname: true,
+				email: true,
+				refreshToken: true
+			}
+		})
 
 		if (!updateUser) {
-      throw new UnauthorizedException("User does not exist", {
-        cause: new Error(),
-        description: "user not found"
-      });
+			throw new UnauthorizedException("User does not exist", {
+				cause: new Error(),
+				description: "user not found"
+			});
 
-    }
+		}
 
 		return updateUser;
 
-  }
+	}
 
 
 

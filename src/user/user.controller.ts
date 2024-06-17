@@ -6,22 +6,23 @@ import { VerifyUserDto } from './dto/verify-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-
+import { Public } from "src/decorators/public.decorator";
 
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
   	constructor(private readonly userService: UserService) {}
 
+	@Public()
 	@Post('register')
 	async create(@Body() createUserDto: CreateUserDto, @Req() request: Request, @Res() response: Response) {
 		try {
 			const user = await this.userService.createUser(createUserDto);
-			// const sendVerificationMail = this.sellerService.verificationMail();
+			response.cookie('accessToken', user.accessToken, { httpOnly: true });
+			response.cookie('refreshToken', user.refreshToken, { httpOnly: true });
 			return response.status(201).json({
 				status: 'ok!',
 				message: 'Your User account has been created',
-				accessToken: user.accessToken,
 				data: user.newUserData,
 			});
 

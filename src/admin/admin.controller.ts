@@ -6,18 +6,24 @@ import { VerifyAdminDto } from './dto/verify-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto'; 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { Public } from "src/decorators/public.decorator";
 
 @ApiTags('admin')
 @ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
-
+    constructor(private readonly adminService: AdminService) { }
+    
+    
     @Post('register')
-    async create(@Body() createAdminDto: CreateAdminDto, @Req() request: Request, @Res() response: Response) {
-            try {
+    @Public()
+    async createAdmin(@Body() createAdminDto: CreateAdminDto, @Req() request: Request, @Res() response: Response) {
+        console.log(request.cookies['_csrf'])
+        try {
+                // response.cookie('XSRF-TOKEN', request.csrfToken());
                 const admin = await this.adminService.createAdmin(createAdminDto);
-                // const sendVerificationMail = this.sellerService.verificationMail();
+                response.cookie('accessToken', admin.accessToken, { httpOnly: true });
+                response.cookie('refreshToken', admin.refreshToken, { httpOnly: true });
                 return response.status(201).json({
                     status: 'ok!',
                     message: 'Your admin account has been created',
@@ -37,10 +43,14 @@ export class AdminController {
             
     }
 
+    @Public()
     @Post('signin') 
     async login(@Body() loginAdminDto: LoginAdminDto, @Res() response: Response) {
         try {
+            
             const loginAdmin = await this.adminService.loginAdmin(loginAdminDto);
+            response.cookie('accessToken', loginAdmin.accessToken, { httpOnly: true });
+            response.cookie('refreshToken', loginAdmin.refreshToken, { httpOnly: true });
             // const sendVerificationMail = this.sellerService.verificationMail();
             return response.status(201).json({
                 status: 'ok!',

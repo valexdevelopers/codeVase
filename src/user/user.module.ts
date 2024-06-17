@@ -8,14 +8,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { VerificationMailService } from 'src/emails/verificationmail.service';
 import { VerifyTokenService } from 'src/helpers/verifyToken.service';
+import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
+import { LocalAuthJwtStrategy } from 'src/strategy/localAuth.jwt.strategy';
+import { UserAccessTokenGuard } from 'src/guards/user.accesstoken.guard copy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: {
-        expiresIn: process.env.JWT_EXPIRES_IN
-      }
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        signOptions: { expiresIn: configService.get<string | number>('JWT_ACCESS_TOKEN_EXPIRY') },
+      }),
+      inject: [ConfigService],
     }),
     MailerModule.forRoot({
       transport: {
@@ -37,7 +45,13 @@ import { VerifyTokenService } from 'src/helpers/verifyToken.service';
     JwtService,
     GenereteTokenService,
     VerificationMailService,
-    VerifyTokenService
+    VerifyTokenService,
+    LocalAuthJwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: UserAccessTokenGuard,
+    }
+
   ],
 })
 export class UserModule {}

@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as cookieParser from 'cookie-parser';
+import { Request, Response, NextFunction } from 'express';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -34,15 +35,24 @@ async function bootstrap() {
     }; 
     app.enableCors(Cors);
     app.use(cookieParser());
-    app.use(csurf({ cookie: true }));
+    //app.use(csurf({ cookie: true }));
+    //Custom CSRF middleware to exempt Swagger
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        if (req.url.startsWith('/api/v1')) {
+            // Skip CSRF protection for Swagger
+            return next();
+        }
+        csurf({ cookie: true })(req, res, next);
+    });
     const Options = new DocumentBuilder()
         .setTitle('CodeVase Api version 1.0.0')
         .setDescription(`Codebase is an online learning tool for beginers to write code, run their code and test their code`)
         .setVersion('version 1.0.0')
         .addBearerAuth()
         .build()
-    const Document = SwaggerModule.createDocument(app, Options);
-    SwaggerModule.setup('api/v1', app, Document);
+    const document = SwaggerModule.createDocument(app, Options);
+    SwaggerModule.setup('api/v1', app, document);
+
     app.useGlobalPipes(new ValidationPipe());
     await app.listen(4000);
     }

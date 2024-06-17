@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { IS_PUBLIC_KEY } from "src/decorators/public.decorator";
 
 @Injectable()
-export class AdminAccessTokenGuard extends AuthGuard('jwt') implements CanActivate {
+export class UserAccessTokenGuard extends AuthGuard('jwt') implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         private readonly jwtService: JwtService,

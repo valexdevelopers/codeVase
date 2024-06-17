@@ -11,21 +11,21 @@ export class GenereteTokenService{
     
     // the function below generates authentication tokens
     public async createTokens(adminId: string, email: string) {
-        const accessToken = this.jwtService.sign({
+        const accessToken = await this.jwtService.signAsync({
             adminId: adminId,
             email: email
         }, {
-            expiresIn: '2h',
+            expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRY'),
             secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-        });
+        }); 
 
-        const refreshToken = this.jwtService.sign({
+        const refreshToken = await this.jwtService.signAsync({
             adminId: adminId,
             email: email,
             accessToken
         },
             {
-                expiresIn: '5h',
+                expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRY'),
                 secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET')
             })
 

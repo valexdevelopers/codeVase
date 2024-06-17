@@ -11,7 +11,7 @@ export class VerifyTokenService {
 
     public async verifyToken(token: string, verificationType: string): Promise<{email?: string, sub?: string}> {
        
-        const payload = await this.jwtService.verify(token, {
+        const payload = await this.jwtService.verifyAsync(token, {
             secret: this.configService.get(verificationType)
         })
 
