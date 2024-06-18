@@ -49,7 +49,8 @@ model Challenge{
   description String? @db.LongText
   challenge String @db.LongText
   challenge_answer String @db.LongText
-  languages Language
+  languages String
+  level Level
   attempt TaskAttempts[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -75,7 +76,8 @@ enum Status{
   Unsuccessful
 }
 
-enum Language{
-  javascript
-  Java
+enum Level{
+  hard
+  medium
+  easy
 }

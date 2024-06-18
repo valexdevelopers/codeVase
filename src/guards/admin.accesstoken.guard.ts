@@ -43,11 +43,11 @@ export class AdminAccessTokenGuard extends AuthGuard('jwt') implements CanActiva
             });
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
-            request['user'] = payload;
+            request.user = payload;
         } catch {
             throw new UnauthorizedException('Restricted area! you must login first 2', {
                 cause: new Error(),
-                description: `Unauthorized user ${IsPublic}`
+                description: `Unauthorized user`
             })
         }
         // return true;

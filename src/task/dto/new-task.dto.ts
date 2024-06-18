@@ -1,7 +1,11 @@
 import { IsString, IsEnum, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
 import { Level } from 'src/enums/level.enum';
 
-export class CreateTaskDto {
+export class NewTaskDto {
+
+    @IsString()
+    @IsNotEmpty()
+    admin_id: string
 
     @IsString()
     @IsNotEmpty()
@@ -20,6 +24,7 @@ export class CreateTaskDto {
         message: 'Level must be one of the following values: easy, heard, medium',
     })
     level: Level
+
     
     @IsString()
     @IsNotEmpty()
@@ -30,7 +35,7 @@ export class CreateTaskDto {
     @IsIn(['javascript', 'python', 'java', 'csharp', 'ruby', 'php']) // Example languages
     languages: string;
 
-    
+
 }
 
 

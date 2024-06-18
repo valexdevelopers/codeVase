@@ -1,12 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { NewTaskDto } from './dto/new-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Prisma } from '@prisma/client';
+
 
 @Injectable()
 export class TaskService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
-  }
+    create(createTaskDto: NewTaskDto) {
+
+        const newTask: Prisma.ChallengeCreateInput = {
+            admin: {
+                connect: { id: createTaskDto.admin_id } 
+            },
+            title: createTaskDto.title,
+            description: createTaskDto.description,
+            challenge: createTaskDto.challenge,
+            level: createTaskDto.level,
+            challenge_answer: createTaskDto.challenge_answer,
+            languages: createTaskDto.languages
+        }
+        return 'This action adds a new task';
+    }
 
   findAll() {
     return `This action returns all task`;
