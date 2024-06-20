@@ -47,6 +47,7 @@ $ yarn prisma generate deploy or dev
 ## Running the app
 
 ```bash
+
 # development
 $ yarn run start
 
@@ -78,47 +79,48 @@ CodeVase API Documentation
 Overview
 
 The CodeVase API is a comprehensive solution for managing an online code editor platform. It allows for user registration, task management, code execution, and feedback provision. This documentation provides detailed information on the API endpoints, their usage, and the data models used.
-Table of Contents
 
-    Authentication
-    User Management
-    Task Management
-    Code Execution
-    Feedback Management
-    Admin Operations
-    Data Models
 
-Authentication
-Register
+## Table of Contents
+
+1. Authentication
+2. User Management
+3. Task Management
+4. Code Execution
+5. Feedback Management
+6. Admin Operations
+7. Data Models
+
+## Authentication
+## Register
 
     Endpoint: /auth/register
     Method: POST
     Description: Registers a new user (either admin or regular user).
     Request Body:
-```bash
-    json
 
+```bash
     {
       "username": "string",
       "password": "string",
       "email": "string",
       "role": "user | admin"
     }
-
-Login
+```
+## Login
 
     Endpoint: /auth/login
     Method: POST
     Description: Logs in a user and returns a JWT token.
     Request Body:
 
-    json
 
+```bash
     {
       "username": "string",
       "password": "string"
     }
-
+```
 Verify Account
 
     Endpoint: /auth/verify
@@ -311,7 +313,7 @@ Conclusion
 The CodeVase API provides a robust framework for managing an online code editor platform with features for user management, task management, code execution, and feedback provision. Admin functionalities include the ability to verify accounts, view all tasks and users, and monitor user activity. Use this documentation as a guide to integrate and utilize the API effectively.
 ## Stay in touch
 
-- Author - [Egerega Virtue](https://kamilmysliwiec.com)
+- Author - [Egerega Virtue](https://egeregav.online)
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
