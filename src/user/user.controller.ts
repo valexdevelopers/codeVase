@@ -15,7 +15,7 @@ import { Public } from "../decorators/public.decorator";
 export class UserController {
   	constructor(private readonly userService: UserService) {}
 
-	@Public()
+	
 	@Get('auth/tokens/crsf_tokens')
 	async csrftoken(@Req() request: Request, @Res() response: Response) {
 		try {
@@ -35,7 +35,7 @@ export class UserController {
 
 	}
 
-	@Public()
+	
 	@Post('register')
 	async create(@Body() createUserDto: CreateUserDto, @Req() request: Request, @Res() response: Response) {
 		try {
@@ -60,7 +60,7 @@ export class UserController {
 
 	}
 
-	@Public()
+	
 	@Post('signin')
 	async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
 		try {
@@ -83,7 +83,7 @@ export class UserController {
 		}
 	}
 
-	@Public()
+	
 	@Post('auth/refresh/signin')
 	async refreshAccessToken(@Body() refreshData: RefreshLoginUserDto, @Req() request: Request, @Res() response: Response) {
 		try {
@@ -151,4 +151,6 @@ export class UserController {
 			});
 		}
 	}
+
+	
 }

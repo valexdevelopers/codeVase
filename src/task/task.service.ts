@@ -49,6 +49,7 @@ export class TaskService {
                 }
             }
         });
+
         if (!AllTasks) {
             throw new InternalServerErrorException("Internal server error, could not get data", {
                 cause: new Error(),

@@ -7,6 +7,7 @@ import * as he from 'he';
 import { Response, Request } from 'express';
 import {AdminAccessTokenGuard} from '../guards/admin.accesstoken.guard'
 import { Level } from 'src/enums/level.enum';
+import { Public } from "../decorators/public.decorator";
 
 @UseGuards(AdminAccessTokenGuard)
 @Controller('task')
@@ -72,15 +73,15 @@ export class TaskController {
         
     }
 
+    @Public()
     @Get('all')
-    async findAll(@Req() request: Request, @Res() response: Response) {
+    async getAll(@Req() request: Request, @Res() response: Response) {
 
         try {
-        const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
         const allTasks = await this.taskService.findAll();
         return response.status(200).json({
-          status: 'ok!',
-            data: IsVerifiedAdmin,
+            status: 'ok!',
+            data: allTasks,
         });
 
       } catch (error) {
@@ -93,9 +94,30 @@ export class TaskController {
       }
     }
 
+    @Get('alltask')
+    async findAll(@Req() request: Request, @Res() response: Response) {
+
+        try {
+            const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
+            const allTasks = await this.taskService.findAll();
+            return response.status(200).json({
+                status: 'ok!',
+                data: allTasks,
+            });
+
+        } catch (error) {
+            return response.status(error.status).json({
+                status: 'error',
+                message: error.message,
+                error: error.response,
+                cause: error.name
+            });
+        }
+    }
     @Get(':id')
-    async findOne(@Param('id') id: string, @Res() response: Response) {
-      try {
+    async findOne(@Param('id') id: string, @Res() response: Response, @Req() request: Request) {
+        try {
+            const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
           const Task = await this.taskService.findOne(id);
           return response.status(201).json({
               status: 'ok!',
@@ -112,29 +134,31 @@ export class TaskController {
       }
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto, @Res() response: Response) {
-      try {
-          const updateTasks = await this.taskService.update(id, updateTaskDto );
-          return response.status(201).json({
-              status: 'ok!',
-              message: 'you deleted a task',
-              data: updateTasks
-          });
+    @Patch(':id')
+    async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto, @Res() response: Response, @Req() request: Request) {
+        try {
+            const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
+            const updateTasks = await this.taskService.update(id, updateTaskDto );
+            return response.status(201).json({
+                status: 'ok!',
+                message: 'you deleted a task',
+                data: updateTasks
+            });
 
-      } catch (error) {
-          return response.status(error.status).json({
-              status: 'error',
-              message: error.message,
-              error: error.response,
-              cause: error.name
-          });
-      }
-  }
+        } catch (error) {
+            return response.status(error.status).json({
+                status: 'error',
+                message: error.message,
+                error: error.response,
+                cause: error.name
+            });
+        }
+    }
 
     @Delete(':id')
-    async remove(@Param('id') id: string, @Res() response: Response) {
+    async remove(@Param('id') id: string, @Res() response: Response, @Req() request: Request) {
         try {
+            const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
             const deleteTasks = await this.taskService.remove(id);
             return response.status(200).json({
                 status: 'ok!',
@@ -152,5 +176,25 @@ export class TaskController {
         }
     }
 
+    // showing all tasks to users
+    // @Public()
+    // @Get('all')
+    // async showAll(@Req() request: Request, @Res() response: Response) {
 
+    //     try {
+    //         const allTasks = await this.taskService.findAll();
+    //         return response.status(200).json({
+    //             status: 'ok!',
+    //             data: allTasks,
+    //         });
+
+    //     } catch (error) {
+    //         return response.status(error.status).json({
+    //             status: 'error',
+    //             message: error.message,
+    //             error: error.response,
+    //             cause: error.name
+    //         });
+    //     }
+    // }
 }
