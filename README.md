@@ -32,6 +32,18 @@
 $ yarn install
 ```
 
+## ensure you have docker desktop running on your local machine
+
+```bash
+$ docker compose up 
+
+$ yarn prisma generate deploy or dev 
+```
+##  Install all dependencies
+2. Get docker running on your machine
+3. run docker compose up
+4. run prisma generate and migrate 
+5. run your application 
 ## Running the app
 
 ```bash
@@ -62,9 +74,244 @@ $ yarn run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
+CodeVase API Documentation
+Overview
+
+The CodeVase API is a comprehensive solution for managing an online code editor platform. It allows for user registration, task management, code execution, and feedback provision. This documentation provides detailed information on the API endpoints, their usage, and the data models used.
+Table of Contents
+
+    Authentication
+    User Management
+    Task Management
+    Code Execution
+    Feedback Management
+    Admin Operations
+    Data Models
+
+Authentication
+Register
+
+    Endpoint: /auth/register
+    Method: POST
+    Description: Registers a new user (either admin or regular user).
+    Request Body:
+```bash
+    json
+
+    {
+      "username": "string",
+      "password": "string",
+      "email": "string",
+      "role": "user | admin"
+    }
+
+Login
+
+    Endpoint: /auth/login
+    Method: POST
+    Description: Logs in a user and returns a JWT token.
+    Request Body:
+
+    json
+
+    {
+      "username": "string",
+      "password": "string"
+    }
+
+Verify Account
+
+    Endpoint: /auth/verify
+    Method: POST
+    Description: Verifies a user's account (admin only).
+    Request Body:
+
+    json
+
+    {
+      "userId": "string"
+    }
+```
+User Management
+Get User Details
+
+    Endpoint: /users/{userId}
+    Method: GET
+    Description: Retrieves details of a specific user.
+    Path Parameters:
+        userId: The ID of the user.
+
+Get All Users
+
+    Endpoint: /users
+    Method: GET
+    Description: Retrieves a list of all users (admin only).
+
+Task Management
+Create Task
+
+    Endpoint: /tasks
+    Method: POST
+    Description: Creates a new task (admin only).
+    Request Body:
+```bash
+    json
+
+    {
+      "title": "string",
+      "description": "string",
+      "inputFormat": "string",
+      "outputFormat": "string"
+    }
+
+Get All Tasks
+
+    Endpoint: /tasks
+    Method: GET
+    Description: Retrieves a list of all tasks.
+
+Get Task Details
+
+    Endpoint: /tasks/{taskId}
+    Method: GET
+    Description: Retrieves details of a specific task.
+    Path Parameters:
+        taskId: The ID of the task.
+
+Code Execution
+Run Code
+
+    Endpoint: /code/run
+    Method: POST
+    Description: Runs the submitted code and returns the result.
+    Request Body:
+
+    json
+
+    {
+      "taskId": "string",
+      "code": "string"
+    }
+
+Save Code
+
+    Endpoint: /code/save
+    Method: POST
+    Description: Saves the submitted code.
+    Request Body:
+
+    json
+
+    {
+      "taskId": "string",
+      "code": "string"
+    }
+```
+Feedback Management
+Get Feedback
+
+    Endpoint: /feedback/{taskId}
+    Method: GET
+    Description: Retrieves feedback for a specific task.
+    Path Parameters:
+        taskId: The ID of the task.
+
+Admin Operations
+View All Tasks
+
+    Endpoint: /admin/tasks
+    Method: GET
+    Description: Admin view to see all tasks and the number of times each task was attempted.
+
+View All Users
+
+    Endpoint: /admin/users
+    Method: GET
+    Description: Admin view to see all users and their details.
+
+View User Task Attempts
+
+    Endpoint: /admin/users/{userId}/tasks
+    Method: GET
+    Description: Admin view to see the number of times a user attempted each task.
+    Path Parameters:
+        userId: The ID of the user.
+
+Data Models
+User
+```bash
+json
+
+{
+  "id": "string",
+  "username": "string",
+  "email": "string",
+  "role": "user | admin",
+  "verified": "boolean"
+}
+
+Task
+
+json
+
+{
+  "id": "string",
+  "title": "string",
+  "description": "string",
+  "inputFormat": "string",
+  "outputFormat": "string"
+}
+
+Code
+
+json
+
+{
+  "taskId": "string",
+  "userId": "string",
+  "code": "string",
+  "timestamp": "datetime"
+}
+
+Feedback
+
+json
+
+{
+  "taskId": "string",
+  "userId": "string",
+  "result": "string",
+  "timestamp": "datetime"
+}
+
+
+Error Handling
+
+All endpoints return standard HTTP status codes along with error messages in the following format:
+
+json
+```baash
+{
+  "error": "string",
+  "message": "string"
+}
+```
+Common Status Codes
+
+    200 OK: Successful operation.
+    201 Created: Resource successfully created.
+    400 Bad Request: Invalid request parameters.
+    401 Unauthorized: Authentication required or failed.
+    403 Forbidden: Insufficient permissions.
+    404 Not Found: Resource not found.
+    500 Internal Server Error: Server encountered an error.
+
+Conclusion
+
+The CodeVase API provides a robust framework for managing an online code editor platform with features for user management, task management, code execution, and feedback provision. Admin functionalities include the ability to verify accounts, view all tasks and users, and monitor user activity. Use this documentation as a guide to integrate and utilize the API effectively.
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Author - [Egerega Virtue](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
