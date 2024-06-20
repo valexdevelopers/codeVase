@@ -59,9 +59,9 @@ model Challenge{
 model TaskAttempts{
   id String @id @default(uuid())
   status Status
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
-  challenge Challenge @relation(fields: [challenge_id], references: [id])
+  challenge Challenge @relation(fields: [challenge_id], references: [id], onDelete: Cascade)
   challenge_id String
   user_code String? @db.LongText // stores user code
   code_stdin String? @db.LongText // stores user code input

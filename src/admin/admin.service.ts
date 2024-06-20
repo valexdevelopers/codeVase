@@ -271,6 +271,26 @@ export class AdminService {
     }
 
 
+    private emailVerificationCheck(adminId: string) {
+        // update admin with refreshToken
+        const isEmailVerified = this.databaseService.admin.findUnique({
+            where: {
+                id: adminId,
+                email_verified_at: { not: null }
+            },
+            
+        });
+
+        if (!isEmailVerified) {
+           
+            throw new ForbiddenException("Kindly verify your email with the verification link sent to your registered email", {
+                cause: new Error(),
+                description: "user email not verified"
+            });
+   
+        }
+        return true
+    }
     // this function updates the admin refresh token
     private async updateRefreshToken(adminId: string, adminrefreshToken: string): Promise<Admin> {
 

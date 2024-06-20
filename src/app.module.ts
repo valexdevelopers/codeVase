@@ -12,6 +12,9 @@ import { DatabaseService } from './database/database.service';
 import { TaskModule } from './task/task.module';
 import { DatabaseModule } from './database/database.module';
 import { TaskAttemptModule } from './task-attempt/task-attempt.module';
+import { AdminService } from './admin/admin.service';
+import { TaskService } from './task/task.service';
+import { TaskAttemptService } from './task-attempt/task-attempt.service';
 
 @Module({
     imports: [
@@ -61,5 +64,6 @@ import { TaskAttemptModule } from './task-attempt/task-attempt.module';
         }
         
     ],
+
 })
 export class AppModule {}

@@ -22,12 +22,12 @@ export class UserController {
 			
 			const csrfToken = request.csrfToken();
 			response.cookie('XSRF_TOKEN', csrfToken, { httpOnly: false, secure: false }); // Allow JavaScript access
-			response.json(true); //sets the browser cookies and just returns true to the client request
+			response.json(csrfToken); //sets the browser cookies and just returns true to the client request
 
 		} catch (error) {
 			return response.status(error.status).json({
 				status: 'error',
-				message: error.message,
+				message: error.csrfToken,
 				error: error.response.error,
 				cause: error.name
 			});

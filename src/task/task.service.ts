@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
 import { NewTaskDto } from './dto/new-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Prisma } from '@prisma/client';
@@ -10,7 +10,7 @@ export class TaskService {
         private readonly databaseService: DatabaseService
     ){}
     async create(createTaskDto: NewTaskDto): Promise<boolean> {
-
+        
         const newTask: Prisma.ChallengeCreateInput = {
             admin: {
                 connect: { id: createTaskDto.admin_id } 
@@ -108,5 +108,29 @@ export class TaskService {
             });
         }
         return true;
+    }
+
+    public async emailVerificationCheck(adminId: string) {
+        // update admin with refreshToken
+        const isEmailVerified = await  this.databaseService.admin.findUnique({
+            where: {
+                id: adminId,
+                
+            },
+            select: {
+                email_verified_at: true
+            }
+
+        });
+
+        if (isEmailVerified.email_verified_at === null) {
+
+            throw new ForbiddenException("Kindly verify your email with the verification link sent to your registered email", {
+                cause: new Error(),
+                description: "user email not verified"
+            });
+
+        }
+        return true
     }
 }

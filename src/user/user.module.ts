@@ -13,6 +13,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalUserAuthJwtStrategy } from '../strategy/localUserAuthJwtStrategy';
 import { UserAccessTokenGuard } from '../guards/user.accesstoken.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         // connectionTimeout: 10000 //10 seconds
       }
     }),
+    DatabaseModule
   ],
   controllers: [UserController],
   providers: [

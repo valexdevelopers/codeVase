@@ -1,4 +1,16 @@
 services:
+  test-db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    container_name: codevaseTestDB
+      
+    environment:
+      
+       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+    volumes:
+      - db_data:/var/lib/mysql
   db:
     image: mysql:latest
     ports:

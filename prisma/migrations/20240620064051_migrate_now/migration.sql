@@ -53,7 +53,9 @@ CREATE TABLE `TaskAttempts` (
     `status` ENUM('Sucess', 'Unsuccessful') NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
     `challenge_id` VARCHAR(191) NOT NULL,
-    `user_answer` LONGTEXT NOT NULL,
+    `user_code` LONGTEXT NULL,
+    `code_stdin` LONGTEXT NULL,
+    `code_execution_result` LONGTEXT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
     `deleted_at` DATETIME(3) NULL,
@@ -65,7 +67,7 @@ CREATE TABLE `TaskAttempts` (
 ALTER TABLE `Challenge` ADD CONSTRAINT `Challenge_admin_id_fkey` FOREIGN KEY (`admin_id`) REFERENCES `Admin`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TaskAttempts` ADD CONSTRAINT `TaskAttempts_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TaskAttempts` ADD CONSTRAINT `TaskAttempts_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TaskAttempts` ADD CONSTRAINT `TaskAttempts_challenge_id_fkey` FOREIGN KEY (`challenge_id`) REFERENCES `Challenge`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TaskAttempts` ADD CONSTRAINT `TaskAttempts_challenge_id_fkey` FOREIGN KEY (`challenge_id`) REFERENCES `Challenge`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

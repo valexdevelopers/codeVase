@@ -16,7 +16,9 @@ export class TaskController {
 
     @Post('create')
     async create(@Body() createTaskDto: CreateTaskDto, @Req() request: Request, @Res() response: Response) {
+        
         try {
+            const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
             let levelString: string = createTaskDto.level;
             let levelEnum: Level = levelString as Level;
             // Encode HTML entities and special characters
@@ -73,11 +75,12 @@ export class TaskController {
     @Get('all')
     async findAll(@Req() request: Request, @Res() response: Response) {
 
-      try {
+        try {
+        const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
         const allTasks = await this.taskService.findAll();
         return response.status(200).json({
           status: 'ok!',
-            data: allTasks,
+            data: IsVerifiedAdmin,
         });
 
       } catch (error) {
