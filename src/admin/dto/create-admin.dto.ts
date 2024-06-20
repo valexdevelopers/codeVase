@@ -1,6 +1,6 @@
 import { IsEmail, IsStrongPassword, IsOptional, IsNotEmpty, Length, IsDate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { confirmFieldDecorator } from "src/decorators/confirm_field.decorator";
+import { confirmFieldDecorator } from "../../decorators/confirm_field.decorator";
 
 export class CreateAdminDto {
 

@@ -1,6 +1,6 @@
-import { IsEmail, IsStrongPassword, IsOptional, IsNotEmpty, Length, IsDate, IsString } from 'class-validator';
+import { IsEmail, IsStrongPassword, IsOptional, IsNotEmpty, Length, IsDate, IsString, IsEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { confirmFieldDecorator } from "src/decorators/confirm_field.decorator";
+import { confirmFieldDecorator } from "../../decorators/confirm_field.decorator";
 
 export class CreateUserDto {
 
@@ -8,6 +8,8 @@ export class CreateUserDto {
     @IsEmail()
     @Length(6, 100)
     email: string
+
+  
 
     @ApiProperty()
     @Length(2, 50)

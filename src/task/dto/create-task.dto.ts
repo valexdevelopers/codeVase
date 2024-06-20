@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
-import { Level } from 'src/enums/level.enum';
+import { Level } from '../../enums/level.enum';
 
 export class CreateTaskDto {
 
@@ -20,10 +20,6 @@ export class CreateTaskDto {
         message: 'Level must be one of the following values: easy, heard, medium',
     })
     level: Level
-    
-    @IsString()
-    @IsNotEmpty()
-    challenge_answer: string;
 
     @IsString()
     @IsNotEmpty()

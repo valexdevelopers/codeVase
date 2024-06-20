@@ -10,29 +10,30 @@ import { Request, Response, NextFunction } from 'express';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api/v1');
-    app.use(helmet({
-        crossOriginEmbedderPolicy: false,
-        contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            imgSrc: [`'self'`],
-            scriptSrc: [`'self'`],
-            manifestSrc: [`'self'`],
-            frameSrc: [`'self'`],
-            styleSrc: ["'self'"],
-            // connectSrc: ["'self'", "https://api.example.com"],
-            fontSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-            objectSrc: ["'none'"],
-            upgradeInsecureRequests: [],
-        },
-        },
-    }));
     const Cors = {
         origin: ['http://localhost:3000'],
         methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
-        allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+        allowedHeaders: ['Content-Type', 'Authorization', , 'x-csrf-token'], // Allow these headers
         credentials: true, // Allow sending cookies and authorization headers
-    }; 
+    };
+    app.enableCors(Cors);
+    app.use(helmet({
+        crossOriginEmbedderPolicy: false,
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                imgSrc: [`'self'`],
+                scriptSrc: [`'self'`],
+                manifestSrc: [`'self'`],
+                frameSrc: [`'self'`],
+                styleSrc: ["'self'"],
+                connectSrc: ["'self'", , "http://localhost:3000"],
+                fontSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+                objectSrc: ["'none'"],
+                upgradeInsecureRequests: [],
+            },
+        },
+    }));
     app.enableCors(Cors);
     app.use(cookieParser());
     //app.use(csurf({ cookie: true }));

@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
-export class LocalAuthJwtStrategy extends PassportStrategy(Strategy) {
+export class LocalAdminAuthJwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         private configService: ConfigService
     ) {
@@ -16,6 +16,6 @@ export class LocalAuthJwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        return { userId: payload.sub, email: payload.email };
+        return { admin_id: payload.adminId, email: payload.email};
     }
 }

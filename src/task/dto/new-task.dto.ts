@@ -25,11 +25,6 @@ export class NewTaskDto {
     })
     level: Level
 
-    
-    @IsString()
-    @IsNotEmpty()
-    challenge_answer: string;
-
     @IsString()
     @IsNotEmpty()
     @IsIn(['javascript', 'python', 'java', 'csharp', 'ruby', 'php']) // Example languages

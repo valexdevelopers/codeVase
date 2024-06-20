@@ -3,14 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { VerifyUserDto } from './dto/verify-user.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { Prisma } from '@prisma/client';
 import * as Bcrypt from 'bcrypt';
-import { GenereteTokenService } from 'src/helpers/generatetoken.service';
-import { User } from 'src/user/entities/user.entity';
-import { VerificationMailService } from 'src/emails/verificationmail.service';
+import { GenereteTokenService } from '../helpers/generatetoken.service';
+import { User } from '../user/entities/user.entity';
+import { VerificationMailService } from '../emails/verificationmail.service';
 import { ConfigService } from '@nestjs/config';
-import { VerifyTokenService } from 'src/helpers/verifyToken.service';
+import { VerifyTokenService } from '../helpers/verifyToken.service';
 
 
 
@@ -37,7 +37,7 @@ export class UserService {
 		}
 
 		// check if User exists with this email
-		const IsRegisteredUser = await this.databaseService.admin.findFirst({
+		const IsRegisteredUser = await this.databaseService.user.findFirst({
 			where: {
 				email: newUser.email
 			}
@@ -47,20 +47,20 @@ export class UserService {
 			// if email exists in database, throw an conflict exception 
 			throw new ConflictException("User account already exists, Please login", {
 				cause: new Error(),
-				description: "Email not unique, an User with the email exists"
+				description: "Email not unique, a User with the email exists"
 			});
 		}
 
 		const registerUser = await this.databaseService.user.create({ data: newUser });
 
 		if (!registerUser) {
-			throw new InternalServerErrorException("Internal server error! Admin registration failed", {
+			throw new InternalServerErrorException("Internal server error! user registration failed", {
 				cause: new Error(),
 				description: "server error"
 			})
 		}
 
-		// generate adminTokens
+		// generate userTokens
 		const { accessToken, refreshToken } = await this.generateToken.createTokens(registerUser.id, registerUser.email);
 
 		const newUserData: User = await this.updateRefreshToken(registerUser.id, refreshToken)

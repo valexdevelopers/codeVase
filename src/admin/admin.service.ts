@@ -3,14 +3,14 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { VerifyAdminDto } from './dto/verify-admin.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { Prisma } from '@prisma/client';
 import * as Bcrypt from 'bcrypt';
-import { GenereteTokenService } from 'src/helpers/generatetoken.service';
-import { Admin } from 'src/admin/entities/admin.entity';
-import { VerificationMailService } from 'src/emails/verificationmail.service';
+import { GenereteTokenService } from '../helpers/generatetoken.service';
+import { Admin } from '../admin/entities/admin.entity';
+import { VerificationMailService } from '../emails/verificationmail.service';
 import { ConfigService } from '@nestjs/config';
-import { VerifyTokenService } from 'src/helpers/verifyToken.service';
+import { VerifyTokenService } from '../helpers/verifyToken.service';
 
 
 

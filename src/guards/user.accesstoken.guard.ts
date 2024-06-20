@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core'
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { IS_PUBLIC_KEY } from "src/decorators/public.decorator";
+import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
 
 @Injectable()
 export class UserAccessTokenGuard extends AuthGuard('jwt') implements CanActivate {
@@ -27,10 +27,10 @@ export class UserAccessTokenGuard extends AuthGuard('jwt') implements CanActivat
         }
 
         const request = context.switchToHttp().getRequest();
-        const token = this.extractTokenFromHeader(request);
+        const token = this.extractTokenFromCookie(request);
 
         if (!token) {
-           throw new UnauthorizedException('Restricted area! Kindly login', {
+           throw new UnauthorizedException('Restricted user area! Kindly login', {
                 cause: new Error(),
                 description: 'Unauthorized user'
             })
@@ -45,19 +45,23 @@ export class UserAccessTokenGuard extends AuthGuard('jwt') implements CanActivat
             // so that we can access it in our route handlers
             request['user'] = payload;
         } catch {
-            throw new UnauthorizedException('Restricted area! you must login first 2', {
+            throw new UnauthorizedException('Restricted user area! you must login first 2', {
                 cause: new Error(),
                 description: `Unauthorized user ${IsPublic}`
             })
         }
         // return true;
-        console.log(`isPublic: ${IsPublic}`);
+        console.log(`isPublic  we: ${IsPublic}`);
        return super.canActivate(context)
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
+    }
+
+    private extractTokenFromCookie(request: Request): string | undefined {
+        return request.cookies?.accessToken; // Assuming the cookie is named 'accessToken'
     }
 }
 

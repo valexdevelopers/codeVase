@@ -48,7 +48,6 @@ model Challenge{
   title String
   description String? @db.LongText
   challenge String @db.LongText
-  challenge_answer String @db.LongText
   languages String
   level Level
   attempt TaskAttempts[]
@@ -64,8 +63,10 @@ model TaskAttempts{
   user_id String
   challenge Challenge @relation(fields: [challenge_id], references: [id])
   challenge_id String
-  user_answer String @db.LongText
-  created_at DateTime @default(now())
+  user_code String? @db.LongText // stores user code
+  code_stdin String? @db.LongText // stores user code input
+  code_execution_result String? @db.LongText
+  created_at DateTime @default(now()) 
   updated_at DateTime @updatedAt
   deleted_at DateTime? 
 

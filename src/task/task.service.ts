@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { NewTaskDto } from './dto/new-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Prisma } from '@prisma/client';
-
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
-export class TaskService {
-    create(createTaskDto: NewTaskDto) {
+export class TaskService { 
+    constructor(
+        private readonly databaseService: DatabaseService
+    ){}
+    async create(createTaskDto: NewTaskDto): Promise<boolean> {
 
         const newTask: Prisma.ChallengeCreateInput = {
             admin: {
@@ -16,25 +19,94 @@ export class TaskService {
             description: createTaskDto.description,
             challenge: createTaskDto.challenge,
             level: createTaskDto.level,
-            challenge_answer: createTaskDto.challenge_answer,
             languages: createTaskDto.languages
         }
-        return 'This action adds a new task';
+        const createTask = await this.databaseService.challenge.create({ data: newTask });
+
+        if (!createTask) {
+            throw new InternalServerErrorException("Internal server error! could not create task", {
+                cause: new Error(),
+                description: "server error"
+            })
+        }
+
+        return true
     }
 
-  findAll() {
-    return `This action returns all task`;
+    async findAll() {
+        const AllTasks = await this.databaseService.challenge.findMany({
+            
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                challenge: true,
+                languages:true,
+                admin: {
+                    select: {
+                        fullname: true // Include only the fullname field of the admin
+                    }
+                }
+            }
+        });
+        if (!AllTasks) {
+            throw new InternalServerErrorException("Internal server error, could not get data", {
+                cause: new Error(),
+                description: "could not select all task"
+            });
+        }
+        return AllTasks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  findOne(id: string) {
+      // update user with refreshToken
+      const Task = this.databaseService.challenge.findUnique({
+          where: {
+              id: id
+          },
+          select: {
+              id: true,
+              title: true,
+              description: true,
+              challenge: true,
+              languages: true,
+              admin: {
+                  select: {
+                      fullname: true // Include only the fullname field of the admin
+                  }
+              }
+          }
+      });
+
+      return Task;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+ async update(id: string, updateTaskDto: UpdateTaskDto) {
+
+      // update user with refreshToken
+      const updateTask = this.databaseService.challenge.update({
+          where: {
+              id: id
+          },
+          data: updateTaskDto,
+          select: {
+              title: true,
+          }
+      });
+    
+     return updateTask;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
-  }
+    async remove(id: string) {
+        const removeTasks = await this.databaseService.challenge.delete({
+            where: { id: id }
+        })
+        if (!removeTasks) {
+            throw new InternalServerErrorException("Internal server error, could not delete task", {
+                cause: new Error(),
+                description: "could not select all task"
+            });
+        }
+        return true;
+    }
 }

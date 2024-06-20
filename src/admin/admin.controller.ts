@@ -6,14 +6,35 @@ import { VerifyAdminDto } from './dto/verify-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto'; 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { Public } from "src/decorators/public.decorator";
+import { Public } from "../decorators/public.decorator";
+import { RefreshLoginAdminDto } from './dto/refresh-login.dto';
 
 @ApiTags('admin')
 @ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
     constructor(private readonly adminService: AdminService) { }
-    
+
+    @Public()
+    @Get('auth/tokens/crsf_tokens')
+    async csrftoken(@Req() request: Request, @Res() response: Response) {
+        try {
+
+            const csrfToken = request.csrfToken();
+            response.cookie('XSRF_TOKEN', csrfToken, { httpOnly: false, secure: false }); // Allow JavaScript access
+            response.json(true); //sets the browser cookies and just returns true to the client request
+
+        } catch (error) {
+            return response.status(error.status).json({
+                status: 'error',
+                message: error.message,
+                error: error.response.error,
+                cause: error.name
+            });
+        }
+
+    }
+
     
     @Post('register')
     @Public()
@@ -27,8 +48,6 @@ export class AdminController {
                 return response.status(201).json({
                     status: 'ok!',
                     message: 'Your admin account has been created',
-                    accessToken: admin.accessToken,
-                    refreshToken: admin.refreshToken,
                     data: admin.newAdminData,
                 });
 
@@ -55,8 +74,6 @@ export class AdminController {
             return response.status(201).json({
                 status: 'ok!',
                 message: 'login successful',
-                accessToken: loginAdmin.accessToken,
-                refreshToken: loginAdmin.refreshToken,
                 data: loginAdmin.newAdminData,
             });
 
@@ -70,7 +87,29 @@ export class AdminController {
         } 
     }
 
+    @Public()
+    @Post('auth/refresh/signin')
+    async refreshAccessToken(@Body() refreshData: RefreshLoginAdminDto, @Req() request: Request, @Res() response: Response) {
+        try {
+            const IncomingRefreshToken = request.cookies['refreshToken']
+            const refreshLoginAdmin = await this.adminService.refreshAccessToken(IncomingRefreshToken);
+            response.cookie('accessToken', refreshLoginAdmin.accessToken, { httpOnly: true, secure: false });
+            response.cookie('refreshToken', refreshLoginAdmin.refreshToken, { httpOnly: true, secure: false });
+            return response.status(201).json({
+                status: 'ok!',
+                message: 'login successful',
+                data: refreshLoginAdmin.updatedAdminData,
+            });
 
+        } catch (error) {
+            return response.status(error.status).json({
+                status: 'error',
+                message: error.message,
+                error: error.response.error,
+                cause: error.name
+            });
+        }
+    }
     
     @Post('verify')
     async verify(@Body() verifyAdminDto: VerifyAdminDto, @Res() response: Response) {
@@ -95,7 +134,7 @@ export class AdminController {
         }
     }
 
-
+    @Public()
     @Post('resend-verification')
     async resendVerification(@Body() userId: string, @Res() response: Response) {
         try {

@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { JwtService } from '@nestjs/jwt';
-import { GenereteTokenService } from 'src/helpers/generatetoken.service';
+import { GenereteTokenService } from '../helpers/generatetoken.service';
 import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { VerificationMailService } from 'src/emails/verificationmail.service';
-import { VerifyTokenService } from 'src/helpers/verifyToken.service';
+import { VerificationMailService } from '../emails/verificationmail.service';
+import { VerifyTokenService } from '../helpers/verifyToken.service';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
-import { LocalAuthJwtStrategy } from 'src/strategy/localAuth.jwt.strategy';
-import { UserAccessTokenGuard } from 'src/guards/user.accesstoken.guard copy';
+import { LocalUserAuthJwtStrategy } from '../strategy/localUserAuthJwtStrategy';
+import { UserAccessTokenGuard } from '../guards/user.accesstoken.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -46,12 +46,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     GenereteTokenService,
     VerificationMailService,
     VerifyTokenService,
-    LocalAuthJwtStrategy,
-    {
-      provide: APP_GUARD,
-      useClass: UserAccessTokenGuard,
-    }
+    LocalUserAuthJwtStrategy,
+    UserAccessTokenGuard
 
   ],
 })
-export class UserModule {}
+export class UserModule { }

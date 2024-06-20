@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TaskService } from './task.service';
-import { TaskController } from './task.controller';
+import { TaskAttemptService } from './task-attempt.service';
+import { TaskAttemptController } from './task-attempt.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { LocalAdminAuthJwtStrategy } from '../strategy/localAdminAuth.jwt.strategy';
-import { AdminAccessTokenGuard } from '../guards/admin.accesstoken.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { LocalUserAuthJwtStrategy } from '../strategy/localUserAuthJwtStrategy';
 import { JwtModule } from '@nestjs/jwt';
 import { DatabaseService } from '../database/database.service';
 
@@ -22,13 +20,13 @@ import { DatabaseService } from '../database/database.service';
       inject: [ConfigService],
     })
   ],
-  controllers: [TaskController],
+  controllers: [TaskAttemptController],
   providers: [
-    TaskService,
+    TaskAttemptService,
     DatabaseService,
-    LocalAdminAuthJwtStrategy,
+    LocalUserAuthJwtStrategy,
 
 
   ],
 })
-export class TaskModule { }
+export class TaskAttemptModule { }
