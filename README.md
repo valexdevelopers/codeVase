@@ -188,7 +188,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. Get User Details
 
-    Endpoint: /users/{userId}
+    Endpoint: /user/{userId}
     Method: GET
     Description: Retrieves details of a specific user.
     Path Parameters:

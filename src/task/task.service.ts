@@ -57,9 +57,9 @@ export class TaskService {
             });
         }
         return AllTasks;
-  }
+    }
 
-  findOne(id: string) {
+    findOne(id: string) {
       // update user with refreshToken
       const Task = this.databaseService.challenge.findUnique({
           where: {

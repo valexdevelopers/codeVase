@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -8,7 +8,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { Public } from "../decorators/public.decorator";
- 
+import { UserAccessTokenGuard } from '../guards/user.accesstoken.guard'
+import { AdminAccessTokenGuard } from '../guards/admin.accesstoken.guard'
 
 @ApiBearerAuth()
 @Controller('user')
@@ -152,8 +153,9 @@ export class UserController {
 		}
 	}
 
+	@UseGuards(UserAccessTokenGuard)
 	@Get(':id')
-	  async findOne(@Param('id') id: string, @Res() response: Response) {
+	async findOne(@Param('id') id: string, @Res() response: Response) {
 	    try {
 			const user = await this.userService.getUser(id);
 			return response.status(201).json({
@@ -169,5 +171,25 @@ export class UserController {
 				cause: error.name
 			});
 	    }
-	  }
+	}
+	@UseGuards(AdminAccessTokenGuard) 
+	@Get()
+	async findAll(@Res() response: Response) {
+		try {
+			const AllUsers = await this.userService.getAll();
+			return response.status(201).json({
+				status: 'ok!',
+				data: AllUsers
+			});
+
+		} catch (error) {
+			return response.status(error.status).json({
+				status: 'error',
+				message: error.message,
+				error: error.response,
+				cause: error.name
+			});
+		}
+    }
+
 }

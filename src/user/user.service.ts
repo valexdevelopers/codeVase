@@ -268,7 +268,33 @@ export class UserService {
 
 	}
 
+	public async getAll() {
+		const AllUsers = await this.databaseService.user.findMany({
 
+			select: {
+				id: true,
+				fullname: true,
+				email: true,
+				attempt: {
+					select: {
+						status: true,
+						user_code: true,
+ 						code_stdin: true, // stores user code input
+  						code_execution_result: true,
+						challenge: true // Include only the fullname field of the admin
+					}
+				}
+			}
+		});
+
+		if (!AllUsers) {
+			throw new InternalServerErrorException("Internal server error, could not get data", {
+				cause: new Error(),
+				description: "could not select all task"
+			});
+		}
+		return AllUsers;
+	}
 	public async logout(userId: string): Promise<any> {
 		// null refresh token
 		const findUser = await this.databaseService.user.update({
