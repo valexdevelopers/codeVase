@@ -18,7 +18,7 @@ export class TaskAttemptController {
   @Post('create')
   async create(@Body() createTaskAttemptDto: CreateTaskAttemptDto, @Req() request: Request, @Res() response: Response) {
     try {
-      let statusString: string = createTaskAttemptDto.status;
+        let statusString: string = createTaskAttemptDto.status;
         let statusEnum: Status = statusString as Status;
 
         function customEncode(input: string ) {

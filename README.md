@@ -234,21 +234,21 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     Path Parameters:
         taskId: The ID of the task.
 
-4. Save Task Attempt and Execution Result
 
-
-1. Save Code
+1. Save Save Task Attempt, Code Execution Result
 
     Endpoint: /task/attempt/create
     Method: POST
-    Description: Saves the submitted code.
+    Description: Saves the submitted code. (users only)
     Request Body:
 
 ```bash
 
     {
-      "taskId": "string",
-      "code": "string"
+      "challenge": "string", (takes challenge id)
+      "user_code": "string",
+      code_stdin: "string",
+      code_execution_result: "string"
     }
 ```
 

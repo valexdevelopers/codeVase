@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateTaskAttemptDto } from './dto/create-task-attempt.dto';
 import { UpdateTaskAttemptDto } from './dto/update-task-attempt.dto';
 import { Prisma } from '@prisma/client';
@@ -7,29 +7,33 @@ import { NewTaskAttemptDto } from './dto/new-task-attempt.dto';
 
 @Injectable()
 export class TaskAttemptService {
-  create(createTaskAttemptDto: NewTaskAttemptDto) {
-    // const newTask: Prisma.TaskAttemptsCreateInput = {
-    //   user: {
-    //     connect: { id: createTaskAttemptDto.user }
-    //   },
-    //   challenge: {
-    //     connect: { id: createTaskAttemptDto.challenge }
-    //   },
-    //   user_code: createTaskAttemptDto.user_code,
-    //   code_stdin: createTaskAttemptDto.code_stdin,
-    //   code_execution_result: createTaskAttemptDto.code_execution_result,
-    //   status: createTaskAttemptDto.status
-    // }
-    // const createTask = await this.databaseService.challenge.create({ data: newTask });
+    constructor(
+        private readonly databaseService: DatabaseService
+    ) { }
+    public async create(createTaskAttemptDto: NewTaskAttemptDto) {
 
-    // if (!createTask) {
-    //   throw new InternalServerErrorException("Internal server error! could not create task", {
-    //     cause: new Error(),
-    //     description: "server error"
-    //   })
-    // }
+        const newTask: Prisma.TaskAttemptsCreateInput = {
+        user: {
+            connect: { id: createTaskAttemptDto.user }
+        },
+        challenge: {
+            connect: { id: createTaskAttemptDto.challenge }
+        },
+        user_code: createTaskAttemptDto.user_code,
+        code_stdin: createTaskAttemptDto.code_stdin,
+        code_execution_result: createTaskAttemptDto.code_execution_result,
+        status: createTaskAttemptDto.status
+        }
+        const createTaskAttempt = await this.databaseService.taskAttempts.create({ data: newTask });
 
-    return true
+        if (!createTaskAttempt) {
+            throw new InternalServerErrorException("Internal server error! could not create task", {
+                cause: new Error(),
+                description: "server error"
+            })
+        }
+
+        return true
   }
 
   findAll() {
