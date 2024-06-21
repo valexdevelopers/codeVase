@@ -204,7 +204,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. Create Task
 
-    Endpoint: /task/create
+    Endpoint: /task/admin/create
     Method: POST
     Description: Creates a new task (admin only).
     Request Body:
@@ -234,6 +234,20 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     Path Parameters:
         taskId: The ID of the task.
 
+4. Update Task 
+    Endpoint: /task/admin/{taskId}
+    Method: PATCH
+    Description: Retrieves details of a specific task.
+    Path Parameters:
+        taskId: The ID of the task.
+
+
+5. Delete Task
+    Endpoint: /task/admin/{taskId}/delete
+    Method: DELETE
+    Description: Retrieves details of a specific task.
+    Path Parameters:
+        taskId: The ID of the task.
 
 1. Save Save Task Attempt, Code Execution Result
 
@@ -247,8 +261,8 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     {
       "challenge": "string", (takes challenge id)
       "user_code": "string",
-      code_stdin: "string",
-      code_execution_result: "string"
+      "code_stdin": "string",
+      "code_execution_result": "string"
     }
 ```
 
@@ -256,19 +270,19 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. View All Tasks
 
-    Endpoint: /admin/tasks
+    Endpoint: /task/all
     Method: GET
-    Description: Admin view to see all tasks and the number of times each task was attempted.
+    Description: Admin view to see all tasks.
 
 2.  View All Users
 
-    Endpoint: /admin/users
+    Endpoint: /user/admin/all
     Method: GET
     Description: Admin view to see all users and their details.
 
 3. View User Task Attempts
 
-    Endpoint: /admin/users/{userId}/tasks
+    Endpoint: /user/{userId}
     Method: GET
     Description: Admin view to see the number of times a user attempted each task.
     Path Parameters:

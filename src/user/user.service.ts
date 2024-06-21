@@ -259,8 +259,24 @@ export class UserService {
 			select: {
 				id: true,
 				fullname: true,
-				email: true
-
+				email: true,
+				attempt: {
+					select: {
+						status: true,
+						user_code: true,
+						code_stdin: true, // stores user code input
+						code_execution_result: true,
+						challenge: {
+							select: {
+								title: true,
+								description: true,
+								challenge: true,
+								languages: true,
+								level: true
+							}
+						}// Include only the fullname field of the admin
+					}
+				}
 			}
 		});
 
@@ -281,15 +297,16 @@ export class UserService {
 						user_code: true,
  						code_stdin: true, // stores user code input
   						code_execution_result: true,
-						challenge: {
-							select: {
-								title: true,
-								description: true,
-								challenge: true,
-								languages: true,
-								level: true
-							}
-						}// Include only the fullname field of the admin
+						// challenge: {
+						// 	select: {
+						// 		title: true,
+						// 		description: true,
+						// 		challenge: true,
+						// 		languages: true,
+						// 		level: true
+						// 	}
+						// }
+						// Include only the fullname field of the admin
 					}
 				}
 			}

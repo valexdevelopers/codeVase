@@ -10,12 +10,12 @@ import { Level } from 'src/enums/level.enum';
 import { Public } from "../decorators/public.decorator";
 
 @UseGuards(AdminAccessTokenGuard)
-@Controller('task')
+    @Controller('task')
 export class TaskController {
     constructor(private readonly taskService: TaskService) {}
 
 
-    @Post('create')
+    @Post('admin/create')
     async create(@Body() createTaskDto: CreateTaskDto, @Req() request: Request, @Res() response: Response) {
         
         try {
@@ -114,7 +114,7 @@ export class TaskController {
             });
         }
     }
-    
+
     @Get(':id')
     async findOne(@Param('id') id: string, @Res() response: Response, @Req() request: Request) {
         try {
@@ -133,9 +133,9 @@ export class TaskController {
               cause: error.name
           });
       }
-  }
+    }
 
-    @Patch(':id')
+    @Patch('admin/:id')
     async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto, @Res() response: Response, @Req() request: Request) {
         try {
             const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
@@ -156,7 +156,7 @@ export class TaskController {
         }
     }
 
-    @Delete(':id')
+    @Delete('admin/:id')
     async remove(@Param('id') id: string, @Res() response: Response, @Req() request: Request) {
         try {
             const IsVerifiedAdmin = await this.taskService.emailVerificationCheck(request.user['admin_id'])
@@ -177,25 +177,4 @@ export class TaskController {
         }
     }
 
-    // showing all tasks to users
-    // @Public()
-    // @Get('all')
-    // async showAll(@Req() request: Request, @Res() response: Response) {
-
-    //     try {
-    //         const allTasks = await this.taskService.findAll();
-    //         return response.status(200).json({
-    //             status: 'ok!',
-    //             data: allTasks,
-    //         });
-
-    //     } catch (error) {
-    //         return response.status(error.status).json({
-    //             status: 'error',
-    //             message: error.message,
-    //             error: error.response,
-    //             cause: error.name
-    //         });
-    //     }
-    // }
 }

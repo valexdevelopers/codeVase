@@ -174,7 +174,7 @@ export class UserController {
 	}
 
 	@UseGuards(AdminAccessTokenGuard) 
-	@Get('all')
+	@Get('admin/all')
 	async findAll(@Res() response: Response) {
 		try {
 			const AllUsers = await this.userService.getAll();
