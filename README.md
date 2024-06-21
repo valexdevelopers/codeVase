@@ -294,17 +294,30 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 3. TaskAttempt
 4. Challenge
 
-
+## User
 ```bash
 
   {
     "id": "string",
-    "username": "string",
+    "fullname": "string",
     "email": "string",
-    "role": "user | admin",
-    "verified": "boolean"
+    "password": "string"
+    "email_verified_at": "dateTime"
   }
 ```
+
+## Admin
+```bash
+
+  {
+    "id": "string",
+    "fullname": "string",
+    "email": "string",
+    "password": "string"
+    "email_verified_at": "dateTime"
+  }
+```
+
 
 ## Task
 ```bash
@@ -312,33 +325,23 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     "id": "string",
     "title": "string",
     "description": "string",
-    "inputFormat": "string",
-    "outputFormat": "string"
+    "challenge": "string",
+    "languages": "string",
+    "level": "string",
     }
 
 ```
-## Code
+## Task Attempt
 
 ```bash
     {
-    "taskId": "string",
-    "userId": "string",
-    "code": "string",
-    "timestamp": "datetime"
+     "challenge": "string", (takes challenge id)
+      "user_code": "string",
+      "code_stdin": "string",
+      "code_execution_result": "string"
     }
 ```
-Feedback
 
-```bash
-
-    {
-    "taskId": "string",
-    "userId": "string",
-    "result": "string",
-    "timestamp": "datetime"
-    }
-
-```
 ##  Error Handling
 
  All endpoints return standard HTTP status codes along with error messages in the following format:
@@ -347,6 +350,7 @@ Feedback
 ```bash
     {
     "error": "string",
+    "status": "string",
     "message": "string"
     }
 ```
@@ -356,6 +360,7 @@ Feedback
     201 Created: Resource successfully created.
     400 Bad Request: Invalid request parameters.
     401 Unauthorized: Authentication required or failed.
+    409 Bad Request 
     403 Forbidden: Insufficient permissions.
     404 Not Found: Resource not found.
     500 Internal Server Error: Server encountered an error.
