@@ -184,6 +184,85 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     }
 ```
 
+
+## Admin
+
+1. Register Admin
+
+    Endpoint: /admin/register
+    Method: POST
+    Description: Registers a new admin only.
+    Request Body:
+
+```bash
+    {
+      "fullname": "string",
+      "email": "string",
+      "password": "string",
+      "password_confirmation": "string",
+     
+    }
+```
+2. Login Admin
+
+    Endpoint: /admin/signin
+    Method: POST
+    Description: Logs in a admin and returns a JWT token [accessToken-httpOnly-false and refreshTokens-httpOnly-true].
+    Request Body:
+
+
+```bash
+    {
+      "email": "string",
+      "password": "string"
+    }
+```
+
+
+3. Refresh Admin Login
+
+    Endpoint: /admin/auth/refresh/signin
+    Method: POST
+    Description: Refreshes a admin login using a refreshToken and returns a JWT token [accessToken-httpOnly-false and refreshTokens-httpOnly-true].
+    Request Body:
+
+
+```bash
+    {
+      "refresh": "string" 
+    }
+```
+
+
+## Verification
+
+1.    Verify Admin Account
+
+    Endpoint: /admin/verify
+    Method: POST
+    Description: Verifies a admin's account using a JWT token.
+    Request Body:
+
+```bash
+    {
+      "token": "string"
+    }
+```
+
+
+2.   Resend Verification
+
+  Endpoint: /admin/resend-verification
+    Method: POST
+    Description: Refreshes the verification token and re-sends the user verification email.
+    Request Body:
+
+```bash
+    {
+      "userId": "string"
+    }
+```
+
 ## User Account Management
 
 1. Get User Details
