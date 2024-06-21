@@ -36,35 +36,36 @@ export class TaskAttemptController {
         status: statusEnum,
       }
 
-    //   // Validate the input to prevent SQL injections and ensure correct data structure
-    //   if (
-    //     typeof createTaskAttemptDto !== 'object' ||
-    //     Array.isArray(createTaskAttemptDto) ||
-    //     !createTaskAttemptDto ||
-    //     !Object.keys(createTaskAttemptDto).length
-    //   ) {
-    //     throw new ForbiddenException("Invalid data type or empty data provided", {
-    //       cause: new Error(),
-    //       description: "Validation failed for the provided data",
-    //     });
-    //   }
+      // Validate the input to prevent SQL injections and ensure correct data structure
+      if (
+        typeof createTaskAttemptDto !== 'object' ||
+        Array.isArray(createTaskAttemptDto) ||
+        !createTaskAttemptDto ||
+        !Object.keys(createTaskAttemptDto).length
+      ) {
+        throw new ForbiddenException("Invalid data type or empty data provided", {
+          cause: new Error(),
+          description: "Validation failed for the provided data",
+        });
+      }
 
-    //   if (
-    //     !createTaskAttemptDto.challenge ||
-    //     typeof createTaskAttemptDto.challenge !== 'string' ||
-    //     !createTaskAttemptDto.challenge.trim()
-    //   ) {
-    //     throw new ForbiddenException("Invalid task, Kindly pass only strings", {
-    //       cause: new Error(),
-    //       description: "Task name must be a non-empty string",
-    //     });
-    //   }
+      if (
+        !createTaskAttemptDto.challenge ||
+        typeof createTaskAttemptDto.challenge !== 'string' ||
+        !createTaskAttemptDto.challenge.trim()
+      ) {
+        throw new ForbiddenException("Invalid task, Kindly pass only strings", {
+          cause: new Error(),
+          description: "Task name must be a non-empty string",
+        });
+      }
 
-    //   const newTask = await this.taskAttemptService.create(newcreateTaskAttemptDto);
+      const newTask = await this.taskAttemptService.create(newcreateTaskAttemptDto);
+
       return response.status(201).json({
         status: 'ok!',
-          message: 'New task created successfully',
-          data: newcreateTaskAttemptDto
+        message: 'New task created successfully',
+        data: newTask
       });
 
     } catch (error) {

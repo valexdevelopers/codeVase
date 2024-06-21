@@ -239,7 +239,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. Save Code
 
-    Endpoint: /code/save
+    Endpoint: /task/attempt/create
     Method: POST
     Description: Saves the submitted code.
     Request Body:
