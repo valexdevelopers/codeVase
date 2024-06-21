@@ -75,7 +75,7 @@ $ yarn run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-CodeVase API Documentation
+## CodeVase API Documentation
 Overview
 
 The CodeVase API is a comprehensive solution for managing an online code editor platform. It allows for user registration, task management, code execution, and feedback provision. This documentation provides detailed information on the API endpoints, their usage, and the data models used.
@@ -91,41 +91,90 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 6. Admin Operations
 7. Data Models
 
-## Authentication
-## Register
 
-    Endpoint: /auth/register
-    Method: POST
-    Description: Registers a new user (either admin or regular user).
-    Request Body:
+
+## CSRF Token 
+
+1. Client Authorisation
+
+Endpoint: /user/auth/tokens/crsf_tokens
+Method: GET
+Description: Registers the client and attaches a token to the client.
+Request Body: None
+Response Body: true
+
+## Authentication
+
+## User
+
+1. Register User
+
+Endpoint: /user/register
+Method: POST
+Description: Registers a new user only.
+Request Body:
 
 ```bash
     {
-      "username": "string",
-      "password": "string",
+      "fullname": "string",
       "email": "string",
-      "role": "user | admin"
+      "password": "string",
+      "password_confirmation": "string",
+     
     }
 ```
-## Login
+2. Login User
 
-    Endpoint: /auth/login
+    Endpoint: /user/signin
     Method: POST
-    Description: Logs in a user and returns a JWT token.
+    Description: Logs in a user and returns a JWT token [accessToken-httpOnly-false and refreshTokens-httpOnly-true].
     Request Body:
 
 
 ```bash
     {
-      "username": "string",
+      "email": "string",
       "password": "string"
     }
 ```
-## Verify Account
 
-    Endpoint: /auth/verify
+
+3. Refresh User Login
+
+    Endpoint: /user/auth/refresh/signin
     Method: POST
-    Description: Verifies a user's account (admin only).
+    Description: Refreshes a user login using a refreshToken and returns a JWT token [accessToken-httpOnly-false and refreshTokens-httpOnly-true].
+    Request Body:
+
+
+```bash
+    {
+      "refresh": "string" 
+    }
+```
+
+
+## Verification
+
+1.    Verify User Account
+
+    Endpoint: /user/verify
+    Method: POST
+    Description: Verifies a user's account using a JWT token.
+    Request Body:
+
+```bash
+    {
+      "token": "string"
+    }
+```
+
+
+2.   Resend Verification
+
+  Endpoint: /user/resend-verification
+    Method: POST
+    Description: Refreshes the verification token and re-sends the user verification email.
     Request Body:
 
 ```bash
@@ -133,6 +182,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
       "userId": "string"
     }
 ```
+
 ## User Account Management
 1. Get User Details
 
