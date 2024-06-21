@@ -121,21 +121,20 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
       "password": "string"
     }
 ```
-Verify Account
+## Verify Account
 
     Endpoint: /auth/verify
     Method: POST
     Description: Verifies a user's account (admin only).
     Request Body:
 
-    json
-
+```bash
     {
       "userId": "string"
     }
 ```
-User Management
-Get User Details
+## User Account Management
+1. Get User Details
 
     Endpoint: /users/{userId}
     Method: GET
@@ -143,36 +142,38 @@ Get User Details
     Path Parameters:
         userId: The ID of the user.
 
-Get All Users
+2. Get All Users
 
     Endpoint: /users
     Method: GET
     Description: Retrieves a list of all users (admin only).
 
-Task Management
-Create Task
+## Task Management
+
+1. Create Task
 
     Endpoint: /tasks
     Method: POST
     Description: Creates a new task (admin only).
     Request Body:
-```bash
-    json
 
+
+```bash
     {
       "title": "string",
       "description": "string",
       "inputFormat": "string",
       "outputFormat": "string"
     }
+```
 
-Get All Tasks
+2. Get All Tasks
 
     Endpoint: /tasks
     Method: GET
     Description: Retrieves a list of all tasks.
 
-Get Task Details
+3. Get Task Details
 
     Endpoint: /tasks/{taskId}
     Method: GET
@@ -180,58 +181,39 @@ Get Task Details
     Path Parameters:
         taskId: The ID of the task.
 
-Code Execution
-Run Code
+4. Save Task Attempt and Execution Result
 
-    Endpoint: /code/run
-    Method: POST
-    Description: Runs the submitted code and returns the result.
-    Request Body:
 
-    json
-
-    {
-      "taskId": "string",
-      "code": "string"
-    }
-
-Save Code
+1. Save Code
 
     Endpoint: /code/save
     Method: POST
     Description: Saves the submitted code.
     Request Body:
 
-    json
+```bash
 
     {
       "taskId": "string",
       "code": "string"
     }
 ```
-Feedback Management
-Get Feedback
 
-    Endpoint: /feedback/{taskId}
-    Method: GET
-    Description: Retrieves feedback for a specific task.
-    Path Parameters:
-        taskId: The ID of the task.
+## Admin Operations
 
-Admin Operations
-View All Tasks
+1. View All Tasks
 
     Endpoint: /admin/tasks
     Method: GET
     Description: Admin view to see all tasks and the number of times each task was attempted.
 
-View All Users
+2.  View All Users
 
     Endpoint: /admin/users
     Method: GET
     Description: Admin view to see all users and their details.
 
-View User Task Attempts
+3. View User Task Attempts
 
     Endpoint: /admin/users/{userId}/tasks
     Method: GET
@@ -239,66 +221,69 @@ View User Task Attempts
     Path Parameters:
         userId: The ID of the user.
 
-Data Models
-User
+## Data Models
+1. User
+2. Admin
+3. TaskAttempt
+4. Challenge
+
+
 ```bash
-json
 
-{
-  "id": "string",
-  "username": "string",
-  "email": "string",
-  "role": "user | admin",
-  "verified": "boolean"
-}
+  {
+    "id": "string",
+    "username": "string",
+    "email": "string",
+    "role": "user | admin",
+    "verified": "boolean"
+  }
+```
 
-Task
+## Task
+```bash
+    {
+    "id": "string",
+    "title": "string",
+    "description": "string",
+    "inputFormat": "string",
+    "outputFormat": "string"
+    }
 
-json
+```
+## Code
 
-{
-  "id": "string",
-  "title": "string",
-  "description": "string",
-  "inputFormat": "string",
-  "outputFormat": "string"
-}
-
-Code
-
-json
-
-{
-  "taskId": "string",
-  "userId": "string",
-  "code": "string",
-  "timestamp": "datetime"
-}
-
+```bash
+    {
+    "taskId": "string",
+    "userId": "string",
+    "code": "string",
+    "timestamp": "datetime"
+    }
+```
 Feedback
 
-json
+```bash
 
-{
-  "taskId": "string",
-  "userId": "string",
-  "result": "string",
-  "timestamp": "datetime"
-}
+    {
+    "taskId": "string",
+    "userId": "string",
+    "result": "string",
+    "timestamp": "datetime"
+    }
 
-
-Error Handling
-
-All endpoints return standard HTTP status codes along with error messages in the following format:
-
-json
-```baash
-{
-  "error": "string",
-  "message": "string"
-}
 ```
-Common Status Codes
+##  Error Handling
+
+ All endpoints return standard HTTP status codes along with error messages in the following format:
+
+
+```bash
+    {
+    "error": "string",
+    "message": "string"
+    }
+```
+## Common Status Codes
 
     200 OK: Successful operation.
     201 Created: Resource successfully created.
@@ -311,6 +296,7 @@ Common Status Codes
 Conclusion
 
 The CodeVase API provides a robust framework for managing an online code editor platform with features for user management, task management, code execution, and feedback provision. Admin functionalities include the ability to verify accounts, view all tasks and users, and monitor user activity. Use this documentation as a guide to integrate and utilize the API effectively.
+
 ## Stay in touch
 
 - Author - [Egerega Virtue](https://egeregav.online)
