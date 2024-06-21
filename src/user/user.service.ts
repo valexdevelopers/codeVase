@@ -281,7 +281,15 @@ export class UserService {
 						user_code: true,
  						code_stdin: true, // stores user code input
   						code_execution_result: true,
-						challenge: true // Include only the fullname field of the admin
+						challenge: {
+							select: {
+								title: true,
+								description: true,
+								challenge: true,
+								languages: true,
+								level: true
+							}
+						}// Include only the fullname field of the admin
 					}
 				}
 			}

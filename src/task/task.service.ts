@@ -59,9 +59,9 @@ export class TaskService {
         return AllTasks;
     }
 
-    findOne(id: string) {
+    async findOne(id: string) {
       // update user with refreshToken
-      const Task = this.databaseService.challenge.findUnique({
+      const Task = await this.databaseService.challenge.findUnique({
           where: {
               id: id
           },
@@ -80,23 +80,23 @@ export class TaskService {
       });
 
       return Task;
-  }
+    }
 
- async update(id: string, updateTaskDto: UpdateTaskDto) {
+    async update(id: string, updateTaskDto: UpdateTaskDto) {
 
-      // update user with refreshToken
-      const updateTask = this.databaseService.challenge.update({
-          where: {
-              id: id
-          },
-          data: updateTaskDto,
-          select: {
-              title: true,
-          }
-      });
-    
-     return updateTask;
-  }
+        // update user with refreshToken
+        const updateTask = this.databaseService.challenge.update({
+            where: {
+                id: id
+            },
+            data: updateTaskDto,
+            select: {
+                title: true,
+            }
+        });
+        
+        return updateTask;
+    }
 
     async remove(id: string) {
         const removeTasks = await this.databaseService.challenge.delete({

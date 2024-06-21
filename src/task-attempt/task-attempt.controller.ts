@@ -10,7 +10,7 @@ import { UserAccessTokenGuard } from '../guards/user.accesstoken.guard'
 import { Status } from 'src/enums/status.enum';
 
 @UseGuards(UserAccessTokenGuard)
-@Controller('task')
+@Controller('task/attempt')
 export class TaskAttemptController {
   constructor(private readonly taskAttemptService: TaskAttemptService) { }
 

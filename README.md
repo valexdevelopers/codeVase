@@ -196,7 +196,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 2. Get All Users
 
-    Endpoint: /users
+    Endpoint: /user/all
     Method: GET
     Description: Retrieves a list of all users (admin only).
 
@@ -204,7 +204,7 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. Create Task
 
-    Endpoint: /tasks
+    Endpoint: /task/create
     Method: POST
     Description: Creates a new task (admin only).
     Request Body:
@@ -214,20 +214,21 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
     {
       "title": "string",
       "description": "string",
-      "inputFormat": "string",
-      "outputFormat": "string"
+      "challenge": "string",
+      "languages": "string",
+      "level": "string",
     }
 ```
 
 2. Get All Tasks
 
-    Endpoint: /tasks
+    Endpoint: /task/all
     Method: GET
     Description: Retrieves a list of all tasks.
 
 3. Get Task Details
 
-    Endpoint: /tasks/{taskId}
+    Endpoint: /task/{taskId}
     Method: GET
     Description: Retrieves details of a specific task.
     Path Parameters:
