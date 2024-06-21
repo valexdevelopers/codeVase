@@ -249,6 +249,26 @@ export class UserService {
 
 	}
 
+	// gets User
+	public async getUser(userId: string): Promise<User > {
+
+		const user = await this.databaseService.user.findUnique({
+			where: {
+				id: userId
+			},
+			select: {
+				id: true,
+				fullname: true,
+				email: true
+
+			}
+		});
+
+		return user;
+
+	}
+
+
 	public async logout(userId: string): Promise<any> {
 		// null refresh token
 		const findUser = await this.databaseService.user.update({
@@ -265,6 +285,7 @@ export class UserService {
 
 
 	}
+
 
 
 	// this function updates the user refresh token

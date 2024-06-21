@@ -152,5 +152,22 @@ export class UserController {
 		}
 	}
 
-	
+	@Get(':id')
+	  async findOne(@Param('id') id: string, @Res() response: Response) {
+	    try {
+			const user = await this.userService.getUser(id);
+			return response.status(201).json({
+				status: 'ok!',
+				data: user
+			});
+
+	    } catch (error) {
+			return response.status(error.status).json({
+				status: 'error',
+				message: error.message,
+				error: error.response,
+				cause: error.name
+			});
+	    }
+	  }
 }

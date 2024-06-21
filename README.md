@@ -84,12 +84,13 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 ## Table of Contents
 
 1. Authentication
-2. User Management
-3. Task Management
-4. Code Execution
-5. Feedback Management
-6. Admin Operations
-7. Data Models
+2. Verification
+3. User Management
+4. Task Management
+5. Code Execution
+6. Feedback Management
+7. Admin Operations
+8. Data Models
 
 
 
@@ -97,11 +98,11 @@ The CodeVase API is a comprehensive solution for managing an online code editor 
 
 1. Client Authorisation
 
-Endpoint: /user/auth/tokens/crsf_tokens
-Method: GET
-Description: Registers the client and attaches a token to the client.
-Request Body: None
-Response Body: true
+    Endpoint: /user/auth/tokens/crsf_tokens
+    Method: GET
+    Description: Registers the client and attaches a token to the client.
+    Request Body: None
+    Response Body: true
 
 ## Authentication
 
@@ -109,10 +110,10 @@ Response Body: true
 
 1. Register User
 
-Endpoint: /user/register
-Method: POST
-Description: Registers a new user only.
-Request Body:
+    Endpoint: /user/register
+    Method: POST
+    Description: Registers a new user only.
+    Request Body:
 
 ```bash
     {
@@ -184,13 +185,14 @@ Request Body:
 ```
 
 ## User Account Management
+
 1. Get User Details
 
     Endpoint: /users/{userId}
     Method: GET
     Description: Retrieves details of a specific user.
     Path Parameters:
-        userId: The ID of the user.
+    userId: The ID of the user.
 
 2. Get All Users
 
